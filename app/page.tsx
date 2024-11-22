@@ -31,7 +31,7 @@ export default function Page() {
   }
 
   // 로그인
-  async function TestLogin() {
+  async function Login() {
     const current_user = user_validation(username);
     console.log(username, current_user);
     if (current_user == "0") {
@@ -61,7 +61,7 @@ export default function Page() {
           </div>
         </CardContent>
         <CardFooter className="flex justify-between ">
-          <Button className="w-full" onClick={TestLogin}>
+          <Button className="w-full" onClick={Login}>
             Log in
           </Button>
         </CardFooter>

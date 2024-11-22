@@ -5,6 +5,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import EnterButton from "@/components/Button/Button";
 
+import { useSearchParams } from "next/navigation"; //next.js에선 searchParams를 클라이언트 컴포넌트에서 직접 사용할 수 없음. useSearchParams를 사용하여 searchParams를 사용할 수 있음.
+
 import QuizletCard from "@/components/Quizlet/QuizletCard";
 import QuizletModal from "@/components/Quizlet/QuizletModal";
 
@@ -27,7 +29,9 @@ export default function Quizlet({ searchParams }: SearchParamProps) {
   const [createData, setCreateData] = useState("");
   const [submitClicked, setSubmitClicked] = useState(false);
   const [cardsets, setCardsets] = useState<Card[]>([]);
-  const [currentcard, setCurrentCard] = useState({});
+
+  // QuizletCardProps 타입에 맞는 초기값 설정
+  const [currentcard, setCurrentCard] = useState<QuizletCardProps>({});
 
   function showQuizlet() {
     if (!selectQuizlet) {

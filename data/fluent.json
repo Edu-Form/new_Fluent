@@ -183,36 +183,18 @@
     {
       "date": "2024. 9. 27.",
       "cards": [
-        [
-          "Today, I played soccer.",
-          "오늘은 축구를 했다"
-        ],
-        [
-          "It was fun.",
-          "재미있었다"
-        ],
-        [
-          "I want to play again.",
-          "또 하고 싶다."
-        ]
+        ["Today, I played soccer.", "오늘은 축구를 했다"],
+        ["It was fun.", "재미있었다"],
+        ["I want to play again.", "또 하고 싶다."]
       ],
       "id": "3a27"
     },
     {
       "date": "2024. 10. 03.",
       "cards": [
-        [
-          "Today was a holiday.",
-          "오늘은 공휴일이었다"
-        ],
-        [
-          "I had no friends.",
-          "나는 친구가 없었다"
-        ],
-        [
-          "What a sad day.",
-          "슬픈 날이었다."
-        ]
+        ["Today was a holiday.", "오늘은 공휴일이었다"],
+        ["I had no friends.", "나는 친구가 없었다"],
+        ["What a sad day.", "슬픈 날이었다."]
       ],
       "id": "6d54"
     }

@@ -19,7 +19,7 @@ export default function DiaryCard({ diarydata }) {
 
   return (
     <div>
-      {diarydata.map((diary, index) => {
+      {diarydata.map((diary: any, index: number) => {
         const date = new Date(diary.date);
         const year = date.getFullYear();
         const month = date.getMonth() + 1;

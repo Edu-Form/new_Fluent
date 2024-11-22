@@ -1,109 +1,56 @@
 "use client";
 
-import EnterButton from "@/components/Button/Button";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-// import ToastUI from "@/components/ToastUI/ToastUI";
-import "react-day-picker/dist/style.css";
-import AddRoom from "@/components/addroom";
 import dynamic from "next/dynamic";
+
+import "react-day-picker/dist/style.css";
+import EnterButton from "@/components/Button/Button";
+// import ToastUI from "@/components/ToastUI/ToastUI";
+import AddRoom from "@/components/addroom";
 
 const ToastUI = dynamic(() => import("@/components/ToastUI/ToastUI"), {
   ssr: false,
 });
 
 export default function Page() {
-  const [room_name, setRoomName] = useState(""); // room_name 상태 추가
-  const [time, setTime] = useState(0); // 시간 상태 추가
-  const [duration, setDuration] = useState(1); // 기본 지속 시간 1시간
-  const [teacher_name, setTeacherName] = useState(""); // teacher_name 상태 추가
-  const [student_name, setStudentName] = useState(""); // student_name 상태 추가
+  const searchParams = useSearchParams();
+  const user = searchParams.get("user"); // user 상태 추가
+  const student = searchParams.get("student") === "true"; // student=true`일 때 true로 평가
+  const userType = student ? "student" : "teacher"; // userType 상태 추가
   const router = useRouter();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  const URL = "https://43.201.252.152/schedules/";
+  const URL = `https://43.201.252.152/schedules/${userType}/${user}`;
   const [classes, setClasses] = useState<any[]>([]); // classes의 타입 정의
 
   useEffect(() => {
+    if (!user || classes.length > 0) return;
+
     fetch(URL)
       .then((res) => res.json())
       .then((data) => {
         console.log("data 은? ", data);
         setClasses(data);
-      });
-  }, []);
-
-  const content = {
-    submit: "submit",
-    edit: "click Edit",
-  };
-
-  const [selected, setSelected] = useState<Date>(new Date());
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // 선택된 날짜 포맷
-    const formattedDate = selected
-      .toLocaleDateString("ko-KR", {
-        year: "numeric",
-        month: "numeric",
-        day: "numeric",
       })
-      .replace(/\./g, "."); // 2024. 9. 17 형식
-    // 시간 설정
-    const startDateTime = new Date(selected);
-    startDateTime.setHours(time);
+      .catch((error) => console.log("값을 불러오지 못 합니다", URL));
+  }, [user, URL]); // user 값이 바뀔 때마다 새로 fetch
 
-    // duration에 따라 종료 시간 설정
-    const endDateTime = new Date(startDateTime);
-    endDateTime.setHours(startDateTime.getHours() + duration);
+  function Quizlet() {
+    router.push(`/quizlet`);
+    // router.push(
+    //   `/quizlet?user=${user}&student=${student}&access_token=${access_token_info}`
+    // );
+  }
 
-    // UTC로 변환
-    const startUTC = new Date(
-      startDateTime.getTime() + startDateTime.getTimezoneOffset() * 60000
-    )
-      .toISOString()
-      .slice(0, -5);
-    const endUTC = new Date(
-      endDateTime.getTime() + endDateTime.getTimezoneOffset() * 60000
-    )
-      .toISOString()
-      .slice(0, -5);
-    // 지속 시간을 설정
-    const durationValue = duration === 1 ? 1 : 2; // 1시간 또는 2시간 선택
-
-    await fetch(URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        calendarId: "cal1",
-        room_name,
-        date: formattedDate, // 날짜 추가
-        time,
-        duration: durationValue,
-        teacher_name,
-        student_name,
-      }),
-    })
-      .then((res) => {
-        if (res.ok) {
-          alert("완료되었습니다!");
-
-          window.location.reload();
-        } else {
-          console.error("Submit failed");
-        }
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  };
+  function Diary() {
+    router.push(`/diary`);
+    // router.push(`/diary?access_token=${access_token_info}`);
+  }
 
   return (
     <div className="flex bg-gradient-to-b from-[#3f4166] to-[#292956]">
@@ -113,22 +60,41 @@ export default function Page() {
             Fluent
           </Link>
         </div>
-
-        <div className="h-fit" onClick={openModal}>
-          <p className="px-5 my-8 text-gray-400 text-sm font-semibold">
-            달력관리
-          </p>
-          <EnterButton id="edit" content={content} />
-        </div>
+        {/* student가 true일 때 */}
+        {student && (
+          <div className="h-fit">
+            <p className="px-5 my-8 text-gray-400 text-sm font-semibold">
+              학생
+            </p>
+            <div className="flex flex-col gap-10">
+              <div onClick={Quizlet}>
+                <EnterButton
+                  id="quizlet"
+                  content={{ quizlet: "Enter Quizlet" }}
+                />
+              </div>
+              <div onClick={Diary}>
+                <EnterButton id="diary" content={{ diary: "Enter Diary" }} />
+              </div>
+            </div>
+          </div>
+        )}
+        {!student && ( // student가 false일 때만 렌더링
+          <div className="h-fit" onClick={openModal}>
+            <p className="px-5 my-8 text-gray-400 text-sm font-semibold">
+              달력관리
+            </p>
+            <EnterButton id="edit" content={{ edit: "click Edit" }} />
+          </div>
+        )}
       </div>
-
       <div className="flex-1 flex justify-center items-center max-w-full max-h-full overflow-auto">
         <div className="bg-white w-[95%] h-[90%] max-w-full m-5 p-5 rounded-lg shadow-lg overflow-hidden">
           <ToastUI data={classes} />
         </div>
       </div>
-
-      {isModalOpen && <AddRoom closeModal={closeModal} />}
+      {!student && isModalOpen && <AddRoom closeModal={closeModal} />}
     </div>
   );
 }
+ㄷ;
