@@ -25,7 +25,7 @@ export default function Page() {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  const URL = `https://43.201.252.152/schedules/${userType}/${user}`;
+  const URL = `http://13.239.133.161/api/schedules/${userType}/${user}`;
   const [classes, setClasses] = useState<any[]>([]); // classes의 타입 정의
 
   useEffect(() => {
@@ -97,4 +97,3 @@ export default function Page() {
     </div>
   );
 }
-ㄷ;
