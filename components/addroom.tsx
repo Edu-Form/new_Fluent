@@ -13,10 +13,10 @@ import {
 import { AiOutlineLeft } from "react-icons/ai";
 
 interface ScheduleModalProps {
-  closeModal: () => void;
+  closeAddSchedule: () => void;
 }
 
-export default function AddRoom({ closeModal }: ScheduleModalProps) {
+export default function AddRoom({ closeAddSchedule }: ScheduleModalProps) {
   const [date, setDate] = useState<Date | undefined>();
   const [time, setTime] = useState("");
   const [roomList, setRoomList] = useState([]);
@@ -119,7 +119,7 @@ export default function AddRoom({ closeModal }: ScheduleModalProps) {
               <>
                 <button
                   type="button"
-                  onClick={closeModal}
+                  onClick={closeAddSchedule}
                   className="btn btn-sm btn-circle btn-ghost absolute top-6 right-6"
                 >
                   ✕
@@ -189,7 +189,7 @@ export default function AddRoom({ closeModal }: ScheduleModalProps) {
                 </button>
                 <button
                   type="button"
-                  onClick={closeModal}
+                  onClick={closeAddSchedule}
                   className="btn btn-sm btn-circle btn-ghost absolute top-6 right-6"
                 >
                   ✕

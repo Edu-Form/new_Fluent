@@ -4,17 +4,17 @@ import "./ButtonStyles.css";
 import React from "react";
 
 interface ButtonProps {
-  id: string;
-  content: Record<string, string>;
+  content: string;
+  className?: string;
 }
 
-const Button: React.FC<ButtonProps> = ({ id, content }) => {
+const Button: React.FC<ButtonProps> = ({ content, className }) => {
   // Determine the button text based on the `id` and `content`
-  const buttonText = content[id];
+  const buttonText = content;
 
   return (
     <div id="container">
-      <button className="main learn-more">
+      <button className={`main learn-more ${className}`}>
         <span className="main circle" aria-hidden="true">
           <span className="main icon arrow"></span>
         </span>

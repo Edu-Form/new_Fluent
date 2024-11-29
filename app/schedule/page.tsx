@@ -7,8 +7,8 @@ import dynamic from "next/dynamic";
 
 import "react-day-picker/dist/style.css";
 import EnterButton from "@/components/Button/Button";
-// import ToastUI from "@/components/ToastUI/ToastUI";
 import AddRoom from "@/components/addroom";
+import VariousRoom from "@/components/VariousRoom";
 
 const ToastUI = dynamic(() => import("@/components/ToastUI/ToastUI"), {
   ssr: false,
@@ -16,17 +16,22 @@ const ToastUI = dynamic(() => import("@/components/ToastUI/ToastUI"), {
 
 export default function Page() {
   const searchParams = useSearchParams();
-  const user = searchParams.get("user"); // user 상태 추가
-  const student = searchParams.get("student") === "true"; // student=true`일 때 true로 평가
-  const userType = student ? "student" : "teacher"; // userType 상태 추가
+  const user = searchParams.get("user");
+  const student = searchParams.get("student") === "true";
+  const userType = student ? "student" : "teacher";
   const router = useRouter();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const [isVariousRoomOpen, setIsVariousRoomOpen] = useState(false);
+
+  const openAddSchedule = () => setIsModalOpen(true);
+  const closeAddSchedule = () => setIsModalOpen(false);
+
+  const openVariousSchedule = () => setIsVariousRoomOpen(true); // 다양한 스케줄 모달 열기
+  const closeVariousSchedule = () => setIsVariousRoomOpen(false); // 다양한 스케줄 모달 닫기
 
   const URL = `http://13.239.133.161/api/schedules/${userType}/${user}`;
-  const [classes, setClasses] = useState<any[]>([]); // classes의 타입 정의
+  const [classes, setClasses] = useState<any[]>([]);
 
   useEffect(() => {
     if (!user || classes.length > 0) return;
@@ -38,18 +43,14 @@ export default function Page() {
         setClasses(data);
       })
       .catch((error) => console.log("값을 불러오지 못 합니다", URL));
-  }, [user, URL]); // user 값이 바뀔 때마다 새로 fetch
+  }, [user, URL]);
 
   function Quizlet() {
     router.push(`/quizlet`);
-    // router.push(
-    //   `/quizlet?user=${user}&student=${student}&access_token=${access_token_info}`
-    // );
   }
 
   function Diary() {
     router.push(`/diary`);
-    // router.push(`/diary?access_token=${access_token_info}`);
   }
 
   return (
@@ -68,23 +69,28 @@ export default function Page() {
             </p>
             <div className="flex flex-col gap-10">
               <div onClick={Quizlet}>
-                <EnterButton
-                  id="quizlet"
-                  content={{ quizlet: "Enter Quizlet" }}
-                />
+                <EnterButton content="Enter Quizlet" />
               </div>
               <div onClick={Diary}>
-                <EnterButton id="diary" content={{ diary: "Enter Diary" }} />
+                <EnterButton content="Enter Diary" />
               </div>
             </div>
           </div>
         )}
         {!student && ( // student가 false일 때만 렌더링
-          <div className="h-fit" onClick={openModal}>
-            <p className="px-5 my-8 text-gray-400 text-sm font-semibold">
-              달력관리
-            </p>
-            <EnterButton id="edit" content={{ edit: "click Edit" }} />
+          <div>
+            <div className="h-fit" onClick={openAddSchedule}>
+              <p className="px-5 my-8 text-gray-400 text-sm font-semibold">
+                달력관리
+              </p>
+              <EnterButton content="Add Schedule" />
+            </div>
+            <div className="h-fit" onClick={openVariousSchedule}>
+              <p className="px-5 my-8 text-gray-400 text-sm font-semibold">
+                자동 스케줄 추가
+              </p>
+              <EnterButton content="AI SChEDULE" className="auto-schedule" />
+            </div>
           </div>
         )}
       </div>
@@ -93,7 +99,14 @@ export default function Page() {
           <ToastUI data={classes} />
         </div>
       </div>
-      {!student && isModalOpen && <AddRoom closeModal={closeModal} />}
+      {/* AddRoom 모달 */}
+      {!student && isModalOpen && (
+        <AddRoom closeAddSchedule={closeAddSchedule} />
+      )}
+      {/* VariousRoom 모달 */}
+      {!student && isVariousRoomOpen && (
+        <VariousRoom closeVariousSchedule={closeVariousSchedule} />
+      )}
     </div>
   );
 }
