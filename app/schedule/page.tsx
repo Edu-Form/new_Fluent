@@ -30,7 +30,7 @@ export default function Page() {
   const openVariousSchedule = () => setIsVariousRoomOpen(true); // 다양한 스케줄 모달 열기
   const closeVariousSchedule = () => setIsVariousRoomOpen(false); // 다양한 스케줄 모달 닫기
 
-  const URL = `http://13.239.133.161/api/schedules/${userType}/${user}`;
+  const URL = `http://3.106.143.91/api/schedules/${userType}/${user}`;
   const [classes, setClasses] = useState<any[]>([]);
 
   useEffect(() => {

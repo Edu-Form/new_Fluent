@@ -41,7 +41,7 @@ export default function AddRoom({ closeAddSchedule }: ScheduleModalProps) {
       : "";
 
     const all_rooms = await fetch(
-      `http://13.239.133.161/api/schedules/search_rooms/${formattedDate}/${time}/`
+      `http://3.106.143.91/api/schedules/search_rooms/${formattedDate}/${time}/`
     );
     const json_all_rooms = await all_rooms.json();
 
@@ -72,7 +72,7 @@ export default function AddRoom({ closeAddSchedule }: ScheduleModalProps) {
         })
       : "";
 
-    const response = await fetch(`http://13.239.133.161/api/schedules/`, {
+    const response = await fetch(`3.106.143.91/api/schedules/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -89,7 +89,7 @@ export default function AddRoom({ closeAddSchedule }: ScheduleModalProps) {
 
     if (response.status == 200) {
       const currentSchedule = await fetch(
-        `http://13.239.133.161/api/schedules/oneday_oneteacher/${formattedDate}/${teacherName}`
+        `http://3.106.143.91/api/schedules/oneday_oneteacher/${formattedDate}/${teacherName}`
       );
       const data_currentSchedule = await currentSchedule.json();
 
