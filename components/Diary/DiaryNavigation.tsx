@@ -43,7 +43,7 @@ const DiaryNavigation = () => {
         </Link>
 
         <Link className={`font-['Playwrite'] mr-7`} href="diary/?show=true">
-          <EnterButton id="write" content={content} />
+          <EnterButton content={content.write} />
         </Link>
       </div>
     </div>

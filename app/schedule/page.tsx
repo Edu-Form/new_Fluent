@@ -23,6 +23,7 @@ export default function Page() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isVariousRoomOpen, setIsVariousRoomOpen] = useState(false);
+  const [classes, setClasses] = useState<any[]>([]);
 
   const openAddSchedule = () => setIsModalOpen(true);
   const closeAddSchedule = () => setIsModalOpen(false);
@@ -31,7 +32,6 @@ export default function Page() {
   const closeVariousSchedule = () => setIsVariousRoomOpen(false); // 다양한 스케줄 모달 닫기
 
   const URL = `http://3.106.143.91/api/schedules/${userType}/${user}`;
-  const [classes, setClasses] = useState<any[]>([]);
 
   useEffect(() => {
     if (!user || classes.length > 0) return;
@@ -43,11 +43,12 @@ export default function Page() {
         setClasses(data);
       })
       .catch((error) => console.log("값을 불러오지 못 합니다", URL));
-  }, [user, URL]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, URL, classes.length]);
 
-  function Quizlet() {
-    router.push(`/quizlet`);
-  }
+  // function Quizlet() {
+  //   router.push(`/quizlet`);
+  // }
 
   function Diary() {
     router.push(`/diary`);
@@ -68,9 +69,9 @@ export default function Page() {
               학생
             </p>
             <div className="flex flex-col gap-10">
-              <div onClick={Quizlet}>
+              {/* <div onClick={() => router.push(`/quizlet`)}>
                 <EnterButton content="Enter Quizlet" />
-              </div>
+              </div> */}
               <div onClick={Diary}>
                 <EnterButton content="Enter Diary" />
               </div>

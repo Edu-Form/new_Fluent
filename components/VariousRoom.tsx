@@ -38,7 +38,7 @@ export default function VariousRoom({
       student_name: studentName,
     };
 
-    const response = await fetch(`http://3.106.143.91/api/schedules/auto`, {
+    const response = await fetch(`http://3.106.143.91/api/schedules/auto/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
