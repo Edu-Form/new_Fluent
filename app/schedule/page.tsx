@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 
@@ -14,7 +14,7 @@ const ToastUI = dynamic(() => import("@/components/ToastUI/ToastUI"), {
   ssr: false,
 });
 
-export default function Page() {
+const SchedulePage = () => {
   const searchParams = useSearchParams();
   const user = searchParams.get("user");
   const student = searchParams.get("student") === "true";
@@ -109,5 +109,13 @@ export default function Page() {
         <VariousRoom closeVariousSchedule={closeVariousSchedule} />
       )}
     </div>
+  );
+}
+
+export default function Quizlet() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SchedulePage />
+    </Suspense>
   );
 }

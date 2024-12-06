@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
 
@@ -11,7 +11,7 @@ import DiaryModal from "@/components/Diary/DiaryModal";
 import DiaryCard from "@/components/Diary/DiaryCard";
 import DiaryNavigation from "@/components/Diary/DiaryNavigation";
 
-export default function Diary() {
+const DiaryPage = () => {
   const [diaryData, setDiaryData] = useState<DiaryData[]>([]); //types에 명시된 타입을 가져오게 함
   const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
@@ -115,5 +115,13 @@ export default function Diary() {
         }
       `}</style>
     </>
+  );
+}
+
+export default function Diary() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <DiaryPage />
+    </Suspense>
   );
 }
