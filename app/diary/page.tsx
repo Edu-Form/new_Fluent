@@ -4,26 +4,18 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useSearchParams } from "next/navigation";
 
 import DiaryBg from "@/public/images/diarymain.svg";
 import DiaryModal from "@/components/Diary/DiaryModal";
 import DiaryCard from "@/components/Diary/DiaryCard";
 import DiaryNavigation from "@/components/Diary/DiaryNavigation";
 
-type SearchParamProps = {
-  searchParams: Record<string, string> | null | undefined;
-};
-
-//edit button
-const content = {
-  submit: "submit",
-  edit: "click Edit",
-  write: "Write Diary",
-};
-
-export default function Diary({ searchParams }: SearchParamProps) {
+export default function Diary() {
   const [diaryData, setDiaryData] = useState<DiaryData[]>([]); //types에 명시된 타입을 가져오게 함
   const [loading, setLoading] = useState(true);
+  const searchParams = useSearchParams();
+  const show = searchParams.get("show");
 
   const variants: { [key: string]: any } = {
     hidden: {
@@ -42,18 +34,16 @@ export default function Diary({ searchParams }: SearchParamProps) {
     }),
   };
 
-  const show = searchParams?.show;
-
   useEffect(() => {
     // 비동기 데이터 로딩 함수
     const fetchData = async () => {
-      const URL = "http://localhost:3001/diary";
+      const URL = "http://3.106.143.91/api/diary/";
       try {
         const res = await fetch(URL, { cache: "no-store" });
         const data = await res.json();
         setDiaryData(data); // 가져온 데이터를 상태에 설정
       } catch (error) {
-        console.error("데이터 가져오기 실패:", error);
+        console.error("값을 불러오지 못 합니다", URL);
       } finally {
         setLoading(false); // 로딩 완료
       }

@@ -7,18 +7,20 @@ import { useRouter } from "next/navigation";
 export default function DiaryModal() {
   const router = useRouter();
   const [date, setDate] = useState("");
-  const [content, setDiary] = useState("");
+  const [original_text, setMessage] = useState("");
 
   const postDiary = async (e: any) => {
     e.preventDefault();
-    console.log(date, content);
+    console.log(date, original_text);
 
-    await fetch("http://localhost:3001/diary", {
+    const student_name = "Phil";
+
+    await fetch("http://3.106.143.91/api/diary/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ date, content }),
+      body: JSON.stringify({ student_name, date, original_text }),
     })
       .then((res) => {
         router.push("/diary");
@@ -90,9 +92,9 @@ export default function DiaryModal() {
                   Diary Content
                 </label>
                 <textarea
-                  id="diary"
+                  id="original_text"
                   rows={12}
-                  onChange={(e) => setDiary(e.target.value)}
+                  onChange={(e) => setMessage(e.target.value)}
                   className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="What did you do today?"
                 ></textarea>

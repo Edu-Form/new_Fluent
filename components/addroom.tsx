@@ -1,5 +1,6 @@
 "use client";
 
+
 import { useState } from "react";
 import { DayPicker } from "react-day-picker";
 import { Input } from "@/components/ui/input";
@@ -72,7 +73,7 @@ export default function AddRoom({ closeAddSchedule }: ScheduleModalProps) {
         })
       : "";
 
-    const response = await fetch(`3.106.143.91/api/schedules/`, {
+    const response = await fetch(`http://3.106.143.91/api/schedules/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -104,7 +105,7 @@ export default function AddRoom({ closeAddSchedule }: ScheduleModalProps) {
         if (titleDiv)
           titleDiv.innerHTML = `${teacherName}'s Schedule for ${formattedDate}`;
         if (selectedDiv)
-          selectedDiv.innerHTML = `${each.student_name} ${each.time_range}`;
+          selectedDiv.innerHTML = ` ${each.student_name} ${each.time_range}`;
       }
     }
   }
@@ -147,7 +148,7 @@ export default function AddRoom({ closeAddSchedule }: ScheduleModalProps) {
                   <Input
                     id="time"
                     type="number"
-                    placeholder="Enter time (24-hour format)"
+                    placeholder="Enter time"
                     value={time}
                     onChange={(e) => {
                       const value = parseInt(e.target.value, 10);
@@ -163,6 +164,7 @@ export default function AddRoom({ closeAddSchedule }: ScheduleModalProps) {
                     max={23}
                   />
                 </div>
+
                 <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 mb-5 w-full flex justify-center">
                   <button
                     onClick={searchRooms}
@@ -171,8 +173,9 @@ export default function AddRoom({ closeAddSchedule }: ScheduleModalProps) {
                         ? "bg-[#121B5C]"
                         : "bg-gray-400 cursor-not-allowed"
                     }`}
+                    disabled={!date || !time}
                   >
-                    Search Available Rooms
+                    Search Rooms
                   </button>
                 </div>
               </>
