@@ -152,3 +152,7 @@
 //     </div>
 //   );
 // }
+
+export default function empty(){
+    return <div>Hello</div>
+}

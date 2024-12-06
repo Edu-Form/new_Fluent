@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-export default function DiaryCard({ diarydata }) {
+export default function DiaryCard({ diarydata }:{ diarydata: any}) {
   // 애니메이션 variants 정의
   const variants = {
     hidden: (isOdd: number) => ({
