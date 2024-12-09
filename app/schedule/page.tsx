@@ -17,8 +17,8 @@ const ToastUI = dynamic(() => import("@/components/ToastUI/ToastUI"), {
 const SchedulePage = () => {
   const searchParams = useSearchParams();
   const user = searchParams.get("user");
-  const student = searchParams.get("student") === "true";
-  const userType = student ? "student" : "teacher";
+  const type = searchParams.get("type"); 
+  const user_id = searchParams.get("id");
   const router = useRouter();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -31,7 +31,7 @@ const SchedulePage = () => {
   const openVariousSchedule = () => setIsVariousRoomOpen(true); // 다양한 스케줄 모달 열기
   const closeVariousSchedule = () => setIsVariousRoomOpen(false); // 다양한 스케줄 모달 닫기
 
-  const URL = `http://3.106.143.91/api/schedules/${userType}/${user}`;
+  const URL = `http://3.106.143.91/api/schedules/${type}/${user}`;
 
   useEffect(() => {
     if (!user || classes.length > 0) return;
@@ -39,6 +39,7 @@ const SchedulePage = () => {
     fetch(URL)
       .then((res) => res.json())
       .then((data) => {
+        console.log(URL)
         console.log("data 은? ", data);
         setClasses(data);
       })
@@ -63,7 +64,7 @@ const SchedulePage = () => {
           </Link>
         </div>
         {/* student가 true일 때 */}
-        {student && (
+        {type == 'student' && (
           <div className="h-fit">
             <p className="px-5 my-8 text-gray-400 text-sm font-semibold">
               학생
@@ -78,7 +79,7 @@ const SchedulePage = () => {
             </div>
           </div>
         )}
-        {!student && ( // student가 false일 때만 렌더링
+        {type != 'student' && ( // student가 false일 때만 렌더링
           <div>
             <div className="h-fit" onClick={openAddSchedule}>
               <p className="px-5 my-8 text-gray-400 text-sm font-semibold">
@@ -101,11 +102,11 @@ const SchedulePage = () => {
         </div>
       </div>
       {/* AddRoom 모달 */}
-      {!student && isModalOpen && (
+      {type != 'student' && isModalOpen && (
         <AddRoom closeAddSchedule={closeAddSchedule} />
       )}
       {/* VariousRoom 모달 */}
-      {!student && isVariousRoomOpen && (
+      {type != 'student' && isVariousRoomOpen && (
         <VariousRoom closeVariousSchedule={closeVariousSchedule} />
       )}
     </div>

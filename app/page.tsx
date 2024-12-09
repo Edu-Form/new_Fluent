@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import {
@@ -28,6 +28,25 @@ export default function Page() {
       return `${users[username as keyof typeof users]}`; // Access the value using the key
     }
     return "0";
+  }
+
+
+  async function LoginTest(){
+    try {
+      const response = await fetch(`http://3.106.143.91/api/user/${username}`)
+      if (response.ok){
+        const data = await response.json();
+        console.log(data)
+        if (data){
+          console.log(data[0].user_name)
+          const url = `/schedule?user=${data[0].user_name}&type=${data[0].type}&id=${data[0].user_number}`
+          router.push(url)
+        }
+
+    }} catch {
+      router.push("/")
+    }
+      
   }
 
   // 로그인
@@ -61,7 +80,7 @@ export default function Page() {
           </div>
         </CardContent>
         <CardFooter className="flex justify-between ">
-          <Button className="w-full" onClick={Login}>
+          <Button className="w-full" onClick={LoginTest}>
             Log in
           </Button>
         </CardFooter>
