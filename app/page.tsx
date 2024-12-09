@@ -21,17 +21,17 @@ export default function Page() {
   const users = { "01082413315": "Phil", "01011112222": "Test" };
 
   // 입력한 전화번호를 조회하고 있으면, 이름을 보내줌.
-  function user_validation(username: string) {
-    const userKeys = Object.keys(users) as (keyof typeof users)[]; // Cast the keys to the actual keys of the users object
-    if (userKeys.includes(username as keyof typeof users)) {
-      // Ensure username is one of the keys
-      return `${users[username as keyof typeof users]}`; // Access the value using the key
-    }
-    return "0";
-  }
+  // function user_validation(username: string) {
+  //   const userKeys = Object.keys(users) as (keyof typeof users)[]; // Cast the keys to the actual keys of the users object
+  //   if (userKeys.includes(username as keyof typeof users)) {
+  //     // Ensure username is one of the keys
+  //     return `${users[username as keyof typeof users]}`; // Access the value using the key
+  //   }
+  //   return "0";
+  // }
 
 
-  async function LoginTest(){
+  async function Login(){
     try {
       const response = await fetch(`http://3.106.143.91/api/user/${username}`)
       if (response.ok){
@@ -50,15 +50,15 @@ export default function Page() {
   }
 
   // 로그인
-  async function Login() {
-    const current_user = user_validation(username);
-    console.log(username, current_user);
-    if (current_user == "0") {
-      router.push("/");
-    } else {
-      router.push(`/schedule?user=${current_user}&student=false`);
-    }
-  }
+  // async function Login() {
+  //   const current_user = user_validation(username);
+  //   console.log(username, current_user);
+  //   if (current_user == "0") {
+  //     router.push("/");
+  //   } else {
+  //     router.push(`/schedule?user=${current_user}&student=false`);
+  //   }
+  // }
 
   return (
     <div className="h-[90vh] w-full bg-white flex flex-col items-center justify-center">
@@ -80,7 +80,7 @@ export default function Page() {
           </div>
         </CardContent>
         <CardFooter className="flex justify-between ">
-          <Button className="w-full" onClick={LoginTest}>
+          <Button className="w-full" onClick={Login}>
             Log in
           </Button>
         </CardFooter>
