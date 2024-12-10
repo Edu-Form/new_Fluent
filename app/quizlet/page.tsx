@@ -1,158 +1,140 @@
-// "use client";
+"use client";
 
-// import { useState, useEffect } from "react";
-// import Link from "next/link";
-// import { Button } from "@/components/ui/button";
-// import EnterButton from "@/components/Button/Button";
-// import { useSearchParams } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import EnterButton from "@/components/Button/Button";
+import { useSearchParams } from "next/navigation";
 
-// import QuizletCard from "@/components/Quizlet/QuizletCard";
-// import QuizletModal from "@/components/Quizlet/QuizletModal";
+import QuizletCard from "@/components/Quizlet/QuizletCard";
+import QuizletModal from "@/components/Quizlet/QuizletModal";
 
-// type SearchParamProps = {
-//   searchParams: Record<string, string> | null | undefined;
-// };
+// Edit button
+const content = {
+  select: "Select Quizlet",
+  edit: "Click Edit",
+  write: "Create Quizlet",
+  check: "Check Diary",
+};
 
-// //edit button
-// const content = {
-//   select: "Select Quizlet",
-//   edit: "click Edit",
-//   write: "Create Quizlet",
-//   check: "Check Diary",
-// };
+const QuizletPage = () => {
+  const searchParams = useSearchParams();
+  const show = searchParams.get("show");
 
-// export default function Quizlet() {
-//   const searchParams = useSearchParams();
-//   const show = searchParams.get("show");
+  const [selectQuizlet, setSelectQuizlet] = useState(false);
+  // const [createData, setCreateData] = useState("");
+  const [cardsets, setCardsets] = useState<QuizletCardProps[]>([]);
 
-//   const [selectQuizlet, setSelectQuizlet] = useState(false);
-//   const [data, setData] = useState<QuizletData[]>([]);
-//   const [createData, setCreateData] = useState("");
-//   const [submitClicked, setSubmitClicked] = useState(false);
-//   const [cardsets, setCardsets] = useState<Card[]>([]);
+  const [data, setData] = useState<QuizletCardProps[]>([]);
+  const [currentCard, setCurrentCard] = useState<QuizletCardProps | null>(null);
 
-//   // QuizletCardProps 타입에 맞는 초기값 설정
-//   const [currentcard, setCurrentCard] = useState<QuizletCardProps>({});
+  const studentName = "Phil"; // 학생 이름 고정
 
-//   function showQuizlet() {
-//     if (!selectQuizlet) {
-//       cards();
-//       setSelectQuizlet(true);
-//     } else setSelectQuizlet(false);
-//   }
+  function showQuizlet() {
+    if (!selectQuizlet) {
+      fetchQuizletData();
+      setSelectQuizlet(true);
+    } else {
+      setSelectQuizlet(false);
+    }
+  }
 
-//   const cards = async () => {
-//     const cardData = await fetch("http://localhost:3001/quizlet");
-//     const jsonCardData = await cardData.json();
-//     console.log(jsonCardData);
-//     setData(jsonCardData);
-//   };
+  const fetchQuizletData = async () => {
+    try {
+      const response = await fetch(
+        `http://3.106.143.91/api/quizlet/student/${studentName}`
+      );
+      const quizletData: QuizletCardProps[] = await response.json();
+      setData(quizletData);
+    } catch (error) {
+      console.error("Failed to fetch quizlet data:", error);
+    }
+  };
 
-//   function showQuizletCards(e) {
-//     for (const item of data) {
-//       if (item.date == e.target.value) {
-//         setCurrentCard(item);
-//       }
-//     }
-//   }
-//   // parameter로 안넣어주면, 처음 button이 render되었을 때의 변수의 값으로 저장이됨 (update 값이 아닌). 따라서 parameter에 넣어주면 됨. useEffect로 버튼이 클릭되면 변수값 업데이트를 시켜서 넣어줌.
-//   function createQuizletAPI(updated_data) {
-//     console.log(createData);
+  useEffect(() => {
+    fetchQuizletData();
+  }, []);
 
-//     fetch("http://localhost:3001/quizlet", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({
-//         date: updated_data,
-//         cards: [],
-//       }),
-//     });
-//   }
+  const showQuizletCards = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const selectedDate = e.currentTarget.value;
+    const selectedCard = data.find((item) => item.date === selectedDate);
+    if (selectedCard) setCurrentCard(selectedCard);
+  };
 
-//   useEffect(() => {
-//     if (submitClicked && createData) {
-//       createQuizletAPI(createData);
-//       setSubmitClicked(false);
-//     }
-//   });
+  return (
+    <div className="flex bg-gradient-to-b from-[#3f4166] to-[#292956]">
+      {/* 사이드바 */}
+      <div className="flex-col bg-white w-1/8 min-h-screen ">
+        <div className="flex m-5 mb-14 justify-center">
+          <Link href="/" className="btn btn-ghost text-xl font-['Playwrite']">
+            Fluent
+          </Link>
+        </div>
+        <p className="px-5 my-8 text-gray-400 text-sm font-semibold">
+          quizlet 관리
+        </p>
+        <div className="flex flex-col gap-10">
+          <div className="flex flex-col " onClick={showQuizlet}>
+            <EnterButton content={content.select} />
+            <div>
+              {selectQuizlet ? (
+                data.map((item) => (
+                  <div
+                    key={item._id}
+                    className="flex flex-col items-center m-2 p-3 border-slate-300 border-2 hover:bg-slate-300"
+                  >
+                    <Button value={item.date} onClick={showQuizletCards}>
+                      {item.date}
+                    </Button>
+                  </div>
+                ))
+              ) : (
+                <h1 className="opacity-0">No Quizlet</h1>
+              )}
+            </div>
+          </div>
 
-//   function save(e) {
-//     setCreateData(e.target.value);
-//     console.log(e.target.value);
-//   }
+          {cardsets.map((card) => (
+            <div key={card._id}>{card.date}</div>
+          ))}
+        </div>
+      </div>
 
-//   function createQuizlet() {
-//     const a = document.createElement("textarea");
-//     const c = document.createElement("input");
-//     const b = document.querySelector(".inputQuizletData");
-
-//     a.classList.add("text-white");
-//     a.oninput = save;
-//     c.type = "button";
-//     c.value = "Submit";
-//     c.onclick = () => setSubmitClicked(true);
-
-//     b?.appendChild(a);
-//     b?.appendChild(c);
-//   }
-
-//   function updateQuizlet() {}
-
-//   return (
-//     <div className="flex bg-gradient-to-b from-[#3f4166] to-[#292956]">
-//       <div className="flex-col bg-white w-1/8 min-h-screen ">
-//         <div className="flex m-5 mb-14 justify-center">
-//           <Link href="/" className="btn btn-ghost  text-xl font-['Playwrite']">
-//             Fluent
-//           </Link>
-//         </div>
-//         <p className="px-5 my-8 text-gray-400 text-sm font-semibold">
-//           quizlet 관리
-//         </p>
-//         <div className="flex flex-col gap-10">
-//           <Link href="quizlet/?show=true">
-//             <EnterButton content={content.write} />
-//           </Link>
-
-//           <div className="flex flex-col " onClick={showQuizlet}>
-//             <EnterButton content={content.select} />
-//             <div>
-//               {selectQuizlet ? (
-//                 data.map((item) => (
-//                   <div
-//                     key={item.date} // 최상위 div에 key prop를 옮김
-//                     className="flex flex-col items-center m-2 p-3 border-slate-300 border-2 hover:bg-slate-300"
-//                   >
-//                     <Button value={item.date} onClick={showQuizletCards}>
-//                       {item.date}
-//                     </Button>
-//                   </div>
-//                 ))
-//               ) : (
-//                 <h1 className="opacity-0">No Quizlet</h1>
-//               )}
-//             </div>
-//           </div>
-
-//           {cardsets.map((card) => (
-//             <div key={card.date}>{card.date}</div>
-//           ))}
-//         </div>
-//       </div>
-
-//       <div className="flex w-full justify-center items-center">
-//         <div className="quizlet_card" onClick={updateQuizlet}>
-//           <QuizletCard content={currentcard} />
-//         </div>
-//       </div>
-
-//       {show && <QuizletModal />}
-//     </div>
-//   );
-// }
-
-export default function empty(){
-    return <div>Hello</div>
+      {/* 메인 컨텐츠 */}
+      <div className="flex w-full justify-center items-center">
+        <div className="quizlet_card">
+          <QuizletCard
+            content={
+              currentCard
+                ? {
+                    ...currentCard,
+                    cards: currentCard.eng_quizlet.map((eng, index) => [
+                      eng,
+                      currentCard.kor_quizlet[index] || "",
+                    ]),
+                  }
+                : {
+                    _id: "",
+                    student_name: "",
+                    date: "",
+                    original_text: "",
+                    eng_quizlet: [],
+                    kor_quizlet: [],
+                    cards: [],
+                  }
+            }
+          />
+        </div>
+      </div>
+      {show && <QuizletModal />}
+    </div>
+  );
+};
+// Suspense를 사용하여 QuizletPage를 감싸기
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <QuizletPage />
+    </Suspense>
+  );
 }
