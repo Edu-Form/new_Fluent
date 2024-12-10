@@ -35,11 +35,11 @@ export default function Page() {
       const response = await fetch(`http://3.106.143.91/api/user/${username}`);
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
-        if (data) {
-          console.log(data[0].user_name);
-          const url = `/schedule?user=${data[0].user_name}&taype=${data[0].type}&id=${data[0].user_number}`;
-          router.push(url);
+        console.log(data)
+        if (data){
+          console.log(data[0].user_name)
+          const url = `/home?user=${data[0].user_name}&type=${data[0].type}&id=${data[0].user_number}`
+          router.push(url)
         }
       }
     } catch {
