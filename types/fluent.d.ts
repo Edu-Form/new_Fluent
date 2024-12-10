@@ -21,8 +21,18 @@ interface Card {
 //다이어리 타입을 지정해놓았습니다
 
 type DiaryData = {
-  id: number;
+  status_code: number;
+  id: string;
+  student_name: string;
   date: string;
-  content: string;
+  message: {
+    student_name: string;
+    date: string;
+    original_text: string;
+    diary_correction: string;
+    modified_diary_correction: string;
+    diary_expressions: string;
+    diary_summary: string;
+  };
   // 필요한 다른 속성들도 여기에 추가하세요.
 };

@@ -53,7 +53,8 @@ const SchedulePage = () => {
   }
 
   function Diary() {
-    router.push(`/diary`);
+    const url = `/diary?user=${user}&type=${type}&id=${user_id}`;
+    router.push(url);
   }
 
   return (

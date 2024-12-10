@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState, Suspense } from "react";
 import { motion } from "framer-motion";
@@ -15,7 +14,7 @@ const DiaryPage = () => {
   const [diaryData, setDiaryData] = useState<DiaryData[]>([]); //types에 명시된 타입을 가져오게 함
   const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
-  const show = searchParams.get("show");
+  const student_name = searchParams.get("user"); // 쿼리 파라미터에서 student_name을 가져옴
 
   const variants: { [key: string]: any } = {
     hidden: {
@@ -37,7 +36,7 @@ const DiaryPage = () => {
   useEffect(() => {
     // 비동기 데이터 로딩 함수
     const fetchData = async () => {
-      const URL = "http://3.106.143.91/api/diary/";
+      const URL = `http://3.106.143.91/api/diary/student/${student_name}`;
       try {
         const res = await fetch(URL, { cache: "no-store" });
         const data = await res.json();
@@ -50,7 +49,7 @@ const DiaryPage = () => {
     };
 
     fetchData(); // 데이터 요청 함수 호출
-  }, []); // 컴포넌트가 처음 렌더링될 때만 실행
+  }, [student_name]); // 컴포넌트가 처음 렌더링될 때만 실행
 
   if (loading) {
     return <div>로딩 중...</div>;
@@ -102,11 +101,11 @@ const DiaryPage = () => {
         </div>
 
         {/* 모달 창 */}
-        {show && (
+        {/* {student_name || (
           <div className="z-30 relative">
             <DiaryModal />
           </div>
-        )}
+        )} */}
       </div>
 
       <style jsx>{`
@@ -116,7 +115,7 @@ const DiaryPage = () => {
       `}</style>
     </>
   );
-}
+};
 
 export default function Diary() {
   return (
