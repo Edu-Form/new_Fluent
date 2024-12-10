@@ -17,7 +17,7 @@ const ToastUI = dynamic(() => import("@/components/ToastUI/ToastUI"), {
 const SchedulePage = () => {
   const searchParams = useSearchParams();
   const user = searchParams.get("user");
-  const type = searchParams.get("type"); 
+  const type = searchParams.get("type");
   const user_id = searchParams.get("id");
   const router = useRouter();
 
@@ -39,7 +39,7 @@ const SchedulePage = () => {
     fetch(URL)
       .then((res) => res.json())
       .then((data) => {
-        console.log(URL)
+        console.log(URL);
         console.log("data 은? ", data);
         setClasses(data);
       })
@@ -47,9 +47,10 @@ const SchedulePage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, URL, classes.length]);
 
-  // function Quizlet() {
-  //   router.push(`/quizlet`);
-  // }
+  function Quizlet() {
+    const url = `/quizlet?user=${user}&type=${type}&id=${user_id}`;
+    router.push(url);
+  }
 
   function Diary() {
     router.push(`/diary`);
@@ -64,22 +65,22 @@ const SchedulePage = () => {
           </Link>
         </div>
         {/* student가 true일 때 */}
-        {type == 'student' && (
+        {type == "student" && (
           <div className="h-fit">
             <p className="px-5 my-8 text-gray-400 text-sm font-semibold">
               학생
             </p>
             <div className="flex flex-col gap-10">
-              {/* <div onClick={() => router.push(`/quizlet`)}>
+              <div onClick={Quizlet}>
                 <EnterButton content="Enter Quizlet" />
-              </div> */}
+              </div>
               <div onClick={Diary}>
                 <EnterButton content="Enter Diary" />
               </div>
             </div>
           </div>
         )}
-        {type != 'student' && ( // student가 false일 때만 렌더링
+        {type != "student" && ( // student가 false일 때만 렌더링
           <div>
             <div className="h-fit" onClick={openAddSchedule}>
               <p className="px-5 my-8 text-gray-400 text-sm font-semibold">
@@ -102,16 +103,16 @@ const SchedulePage = () => {
         </div>
       </div>
       {/* AddRoom 모달 */}
-      {type != 'student' && isModalOpen && (
+      {type != "student" && isModalOpen && (
         <AddRoom closeAddSchedule={closeAddSchedule} />
       )}
       {/* VariousRoom 모달 */}
-      {type != 'student' && isVariousRoomOpen && (
+      {type != "student" && isVariousRoomOpen && (
         <VariousRoom closeVariousSchedule={closeVariousSchedule} />
       )}
     </div>
   );
-}
+};
 
 export default function Quizlet() {
   return (

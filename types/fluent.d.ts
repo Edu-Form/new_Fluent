@@ -1,8 +1,13 @@
 //퀴즈렛 타입을 지정해놓았습니다
 
 interface QuizletCardProps {
-  date: string; // 날짜를 나타내는 문자열
   cards: string[][]; // 카드 내용 배열 (각 카드는 [앞면, 뒷면] 형식)
+  _id: string;
+  student_name: string;
+  date: string;
+  original_text: string;
+  eng_quizlet: string[];
+  kor_quizlet: string[];
 }
 
 interface QuizletData {
