@@ -5,8 +5,9 @@ import EnterBtn from "@/components/EnterBtn/EnterBtn";
 
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { Suspense } from "react";
 
-export default function Page() {
+const HomePage = () =>  {
   const searchParams = useSearchParams();
   const user = searchParams.get("user");
   const type = searchParams.get("type"); 
@@ -63,4 +64,12 @@ export default function Page() {
       </div>
     )
   ) 
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <HomePage />
+    </Suspense>
+  );
 }
