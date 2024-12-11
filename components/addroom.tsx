@@ -73,7 +73,7 @@ export default function AddRoom({ closeAddSchedule }: ScheduleModalProps) {
         })
       : "";
 
-    const response = await fetch(`13.54.77.128/api/schedules/`, {
+    const response = await fetch(`http://13.54.77.128/api/schedules/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
