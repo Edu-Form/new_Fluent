@@ -1,17 +1,48 @@
 import { motion } from "framer-motion";
 
 export default function DiaryCard({ diarydata }: { diarydata: any }) {
+  const letterVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 25,
+      },
+    },
+  };
+
+  const typingVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.009, // 각 글자들이 0.05초 간격으로 나타남
+        delayChildren: 0.3, // 텍스트가 다 보여지기 전에 딜레이
+      },
+    },
+  };
+
+  // 타자기 효과를 위한 글자 나누기
+  const splitText = (text: string) => {
+    return text.split("").map((char, index) => (
+      <motion.span key={index} variants={letterVariants}>
+        {char}
+      </motion.span>
+    ));
+  };
+
   // 애니메이션 variants 정의
   const variants = {
     hidden: (isOdd: number) => ({
       opacity: 0,
-      x: isOdd ? 50 : -50, // 홀수 인덱스는 오른쪽에서, 짝수 인덱스는 왼쪽에서 시작
+      y: isOdd ? 50 : 50, // 홀수 인덱스는 50 오른쪽에서, 짝수 인덱스는 -50 왼쪽에서 시작 24년 12월 12일 잠시 -50 : -50으로 수정
     }),
     visible: {
       opacity: 1,
-      x: 0,
+      y: 0,
       transition: {
-        duration: 0.8,
+        duration: 1,
         ease: "easeInOut",
       },
     },
@@ -30,7 +61,7 @@ export default function DiaryCard({ diarydata }: { diarydata: any }) {
           <motion.div
             key={index}
             className={`justify-start z-30 my-3 flex ${
-              index % 2 !== 0 ? "flex-row-reverse" : ""
+              index % 2 !== 0 ? "" : ""
             }`}
             custom={index % 2 !== 0}
             initial="hidden"
@@ -42,41 +73,58 @@ export default function DiaryCard({ diarydata }: { diarydata: any }) {
             <div className="relative">
               <div
                 className={`absolute top-[-2rem] ${
-                  index % 2 === 0 ? "left-[-5rem]" : "right-[-3rem]"
+                  index % 2 === 0 ? "left-[-1.5rem]" : "left-[-1.5rem]"
                 } flex flex-col justify-start m-6 font-[bw] text-[#3f4166]`}
               >
-                <div className="flex flex-col font-bold justify-center text-center text-white bg-[#3f4166] rounded-[20%] w-20 h-20 border-[#3f4166] border-[0.2rem]">
-                  <h2 className="text-lg">{year}</h2>
-                  <h1 className="text-2xl">{month}</h1>
+                <div className="flex flex-col font-bold justify-center text-center text-white bg-[#3f4166] rounded-xl w-72 h-12 border-[#3f4166] border-[0.2rem]">
+                  <h1 className="flex text-xl font-bold justify-center">
+                    {year}년 {month}월 {day}일 {weekday}
+                  </h1>
                 </div>
               </div>
 
-              <div className="flex flex-col min-w-[15rem] border-2 rounded-xl justify-end my-12 p-5 text-[#3f4166]">
-                <h1 className="flex text-xl font-bold justify-start">
-                  {month}월 {day}일 {weekday}
+              <div className="flex flex-col min-w-[15rem]  justify-end my-12 p-5 text-[#3f4166] bg-gray-200 rounded-xl">
+                <h1 className="text-lg whitespace-pre-wrap">
+                  <div className="grid grid-cols-2 gap-4 ">
+                    <div className="border-2 rounded-xl p-6 min-h-[20rem] bg-white">
+                      <span className="flex text-xl font-bold justify-start">
+                        Original Diary:
+                      </span>
+                      <span> {diary.original_text}</span>
+                    </div>
+
+                    <div className="border-2 rounded-xl p-6 min-h-[20rem]  bg-white">
+                      <span className="flex text-xl font-bold justify-start bg-gradient-to-r from-[#c8f7ff] via-[#e600ff] to-[#e600ff] text-transparent bg-clip-text">
+                        Corrected Diary:
+                      </span>
+                      <motion.h1 variants={typingVariants}>
+                        <span> {splitText(diary.diary_correction)} </span>
+                      </motion.h1>
+                    </div>
+                  </div>
+                  <br />
+
+                  <span className="flex text-xl font-bold justify-start text-[#3f4166] mb-2">
+                    Summary
+                  </span>
+                  <motion.div
+                    variants={typingVariants}
+                    className="border-2 rounded-xl p-6  bg-white"
+                  >
+                    {splitText(diary.diary_summary)}
+                  </motion.div>
+
+                  <br />
+                  <span className="flex text-xl font-bold justify-start text-[#3f4166] mb-2">
+                    Expressions
+                  </span>
+                  <motion.div
+                    variants={typingVariants}
+                    className="border-2 rounded-xl p-6  bg-white"
+                  >
+                    {splitText(diary.diary_expressions)}
+                  </motion.div>
                 </h1>
-                <br />
-                <h3 className="text-lg justify-center rounded-[0%] whitespace-pre-wrap">
-                  {diary.original_text}
-                  <br />
-                  <br />
-                  <span className="flex text-xl font-bold justify-start bg-gradient-to-r from-[#c8f7ff] via-[#e600ff] to-[#e600ff] text-transparent bg-clip-text">
-                    Corrected Diary:
-                  </span>
-                  {diary.diary_correction}
-                  <br />
-                  <br />
-                  <span className="flex text-xl font-bold justify-start text-[#3f4166]">
-                    Summary:
-                  </span>
-                  {diary.diary_summary}
-                  <br />
-                  <br />
-                  <span className="flex text-xl font-bold justify-start text-[#3f4166]">
-                    Expressions:
-                  </span>
-                  {diary.diary_expressions}
-                </h3>
               </div>
             </div>
           </motion.div>

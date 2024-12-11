@@ -115,7 +115,7 @@ const SchedulePage = () => {
   );
 };
 
-export default function Quizlet() {
+export default function Schedule() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <SchedulePage />

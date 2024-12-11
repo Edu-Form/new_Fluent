@@ -1,12 +1,14 @@
 "use client";
 
+import Lottie from "lottie-react";
+import timerAnimationData from "@/app/assets/lotties/mainLoading.json";
+
 import Image from "next/image";
 import { useEffect, useState, Suspense } from "react";
 import { motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
 
 import DiaryBg from "@/public/images/diarymain.svg";
-import DiaryModal from "@/components/Diary/DiaryModal";
 import DiaryCard from "@/components/Diary/DiaryCard";
 import DiaryNavigation from "@/components/Diary/DiaryNavigation";
 
@@ -52,14 +54,20 @@ const DiaryPage = () => {
   }, [student_name]); // 컴포넌트가 처음 렌더링될 때만 실행
 
   if (loading) {
-    return <div>로딩 중...</div>;
+    return (
+      <div className="fixed inset-0 flex flex-col justify-center items-center text-xl font-['Playwrite']">
+        <div>Fluent</div>
+        <div className="mt-4 w-32 h-32">
+          <Lottie animationData={timerAnimationData} />
+        </div>
+      </div>
+    );
   }
 
   return (
     <>
       <div className="relative">
         <div className="flex justify-center">
-          {" "}
           <DiaryNavigation />
         </div>
 
@@ -71,13 +79,13 @@ const DiaryPage = () => {
             objectFit="cover" // 이미지가 부모 요소의 크기에 맞게 조정
           />
 
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 text-center">
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-0 text-center">
             <span className="text-white text-3xl">Write, your Diary.</span>
             <span className="animate-blink text-white text-4xl">|</span>
           </div>
 
           {/* 아래 가운데 배치된 SCROLL DOWN 텍스트 */}
-          <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-10">
+          <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-0">
             <motion.span
               initial="hidden"
               animate="visible"
@@ -89,7 +97,7 @@ const DiaryPage = () => {
           </div>
         </div>
 
-        <div className=" px-60  relative ">
+        <div className="relative mt-40">
           <div className=" relative px-60 h-[80vh] hide-scrollbar">
             <DiaryCard
               diarydata={diaryData.sort(
@@ -99,13 +107,6 @@ const DiaryPage = () => {
             />
           </div>
         </div>
-
-        {/* 모달 창 */}
-        {/* {student_name || (
-          <div className="z-30 relative">
-            <DiaryModal />
-          </div>
-        )} */}
       </div>
 
       <style jsx>{`
