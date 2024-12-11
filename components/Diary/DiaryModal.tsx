@@ -1,76 +1,104 @@
 "use client";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Lottie from "lottie-react";
+import timerAnimationData from "@/app/assets/lotties/timeLoading.json";
 
-import Link from "next/link";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+interface QuizeletlModalProps {
+  closeIsModal: () => void;
+}
 
-export default function DiaryModal() {
+export default function DiaryModal({ closeIsModal }: QuizeletlModalProps) {
   const router = useRouter();
+  const [class_date, setClassDate] = useState(""); // 수업 날짜 state 추가
   const [date, setDate] = useState("");
   const [original_text, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const searchParams = useSearchParams();
+  const student_name = searchParams.get("user");
+  const type = searchParams.get("type");
+  const user_id = searchParams.get("id");
 
   const postDiary = async (e: any) => {
     e.preventDefault();
-    console.log(date, original_text);
+    console.log(student_name, class_date, date, original_text);
 
-    const student_name = "Phil";
+    setLoading(true); // Submit을 누르면 로딩 시작
 
-    await fetch("http://13.54.77.128/api/diary/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ student_name, date, original_text }),
-    })
-      .then((res) => {
-        router.push("/diary");
-      })
-      .catch((e) => {
-        console.log(e);
+    try {
+      const response = await fetch("http://13.54.77.128/api/diary/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        cache: "no-store",
+        body: JSON.stringify({ student_name, class_date, date, original_text }),
       });
+
+      if (response.ok) {
+        closeIsModal();
+        router.push(`/diary?user=${student_name}&type=${type}&id=${user_id}`);
+        window.location.reload(); // 강제 새로고침
+      } else {
+        console.error("Failed to save diary");
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false); // 요청 후 로딩 끝
+    }
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 overflow-y-auto  bg-slate-400 bg-opacity-50">
-      <div className="relative p-4 w-full max-w-md max-h-full">
-        <div className="relative bg-[#3f4166] shadow rounded-t-lg dark:bg-gray-700">
-          <div className="flex items-center justify-between p-3 md:p-3 border-b  dark:border-gray-600">
-            <h3 className="text-lg font-semibold text-white dark:text-white">
-              Write Diary
-            </h3>
-            <Link
-              type="button"
-              className="text-gray-400 bg-transparent  rounded-[50%] text-sm w-6 h-6 ms-auto inline-flex justify-center items-center "
-              href="/diary"
-            >
-              <div className="dot w-[0.8rem] h-[0.8rem] bg-red-600 hover:bg-red-900 rounded-[50%] "></div>
-              {/* <svg
-                className="w-3 h-3"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 14 14"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                />
-              </svg> */}
-              <span className="sr-only">Close modal</span>
-            </Link>
-          </div>{" "}
-        </div>
+    <dialog id="my_modal_3" className="modal bg-slate-400 bg-opacity-50" open>
+      <div className="flex flex-row relative">
+        {/* 로딩 중일 때 애니메이션 표시 */}
+        {loading ? (
+          <div className="absolute inset-0 flex justify-center items-center rounded-[3rem] bg-slate-500 bg-opacity-50 z-50">
+            <div className="w-40 h-40 bg-white flex justify-center items-center rounded-2xl">
+              <Lottie animationData={timerAnimationData} />
+            </div>
+          </div>
+        ) : null}
 
-        <div className="relative bg-white rounded-b-lg shadow dark:bg-gray-700">
-          <form className="p-4 md:p-5" onSubmit={postDiary}>
+        <div className="rounded-[3rem] p-5 bg-white">
+          <form
+            className="w-[400px] h-[650px]  border-none5"
+            onSubmit={postDiary}
+          >
+            <button
+              onClick={() => !loading && closeIsModal()}
+              className="btn btn-sm btn-circle btn-ghost absolute top-6 right-6 text-black"
+            >
+              ✕
+            </button>
+            <p className="my-5 w-40 h-12 text-xl font-semibold rounded-[20px] text-white bg-[#121B5C] flex items-center justify-center">
+              Write Diary
+            </p>
             <div className="grid gap-4 mb-4 grid-cols-2">
               <div className="col-span-2">
                 <label
+                  htmlFor="class_date"
+                  className="time text-lg font-semibold text-black"
+                >
+                  Class Date
+                </label>
+                <input
+                  type="date"
+                  name="class_date"
+                  id="class_date"
+                  onChange={(e) => setClassDate(e.target.value)}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                  required={true}
+                  disabled={loading} // 로딩 중에는 입력 비활성화
+                />
+              </div>
+
+              <div className="col-span-2">
+                <label
                   htmlFor="date"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  className="time text-lg font-semibold text-black"
                 >
                   Date
                 </label>
@@ -81,13 +109,14 @@ export default function DiaryModal() {
                   onChange={(e) => setDate(e.target.value)}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   required={true}
+                  disabled={loading} // 로딩 중에는 입력 비활성화
                 />
               </div>
 
               <div className="col-span-2">
                 <label
                   htmlFor="diary"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  className="time text-lg font-semibold text-black"
                 >
                   Diary Content
                 </label>
@@ -97,30 +126,22 @@ export default function DiaryModal() {
                   onChange={(e) => setMessage(e.target.value)}
                   className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="What did you do today?"
+                  disabled={loading} // 로딩 중에는 텍스트박스 비활성화
                 ></textarea>
               </div>
             </div>
-            <button
-              type="submit"
-              className="text-white inline-flex items-center bg-[#3f4166] hover:bg-[#777ab3] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            >
-              <svg
-                className="me-1 -ms-1 w-5 h-5"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
+            <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 mb-5 w-full flex justify-center">
+              <button
+                type="submit"
+                className={`w-4/5 h-14 mt-6 rounded-xl text-white bg-[#121B5C]`}
+                disabled={loading} // 로딩 중에는 버튼 비활성화
               >
-                <path
-                  fillRule="evenodd"
-                  d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
-              Submit Diary
-            </button>
+                Submit Diary
+              </button>
+            </div>
           </form>
         </div>
       </div>
-    </div>
+    </dialog>
   );
 }
