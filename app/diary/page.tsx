@@ -36,7 +36,7 @@ const DiaryPage = () => {
   useEffect(() => {
     // 비동기 데이터 로딩 함수
     const fetchData = async () => {
-      const URL = `http://13.239.158.4/api/diary/student/${student_name}`;
+      const URL = `http://13.54.77.128/api/diary/student/${student_name}`;
       try {
         const res = await fetch(URL, { cache: "no-store" });
         const data = await res.json();
