@@ -15,7 +15,7 @@ export default function DiaryModal() {
 
     const student_name = "Phil";
 
-    await fetch("http://3.106.143.91/api/diary/", {
+    await fetch("http://13.239.158.4/api/diary/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

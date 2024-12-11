@@ -32,7 +32,7 @@ export default function Page() {
 
   async function Login() {
     try {
-      const response = await fetch(`http://3.106.143.91/api/user/${username}`);
+      const response = await fetch(`http://13.239.158.4/api/user/${username}`);
       if (response.ok) {
         const data = await response.json();
         console.log(data)

@@ -42,7 +42,7 @@ const QuizletPage = () => {
   const fetchQuizletData = async () => {
     try {
       const response = await fetch(
-        `http://3.106.143.91/api/quizlet/student/${studentName}`
+        `http://13.239.158.4/api/quizlet/student/${studentName}`
       );
       const quizletData: QuizletCardProps[] = await response.json();
       setData(quizletData);

@@ -42,7 +42,7 @@ export default function AddRoom({ closeAddSchedule }: ScheduleModalProps) {
       : "";
 
     const all_rooms = await fetch(
-      `http://3.106.143.91/api/schedules/search_rooms/${formattedDate}/${time}/`
+      `http://13.239.158.4/api/schedules/search_rooms/${formattedDate}/${time}/`
     );
     const json_all_rooms = await all_rooms.json();
 
