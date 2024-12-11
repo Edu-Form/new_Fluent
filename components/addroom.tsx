@@ -137,7 +137,7 @@ export default function AddRoom({ closeAddSchedule }: ScheduleModalProps) {
                 <div className="flex flex-col items-start text-left px-16 py-5">
                   <p className="text-lg font-semibold">When is your class?</p>
                   <p className="mt-3 text-md">
-                    {date ? `${date.toLocaleDateString()}` : "Select a date"}
+                    {date ? `${date.toLocaleDateString("ko-KR", {year: "numeric",month: "2-digit",day: "2-digit",})}` : "Select a date"}
                   </p>
                 </div>
 
