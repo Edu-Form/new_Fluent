@@ -73,7 +73,7 @@ export default function AddRoom({ closeAddSchedule }: ScheduleModalProps) {
         })
       : "";
 
-    const response = await fetch(`http://3.106.143.91/api/schedules/`, {
+    const response = await fetch(`13.54.77.128/api/schedules/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -90,7 +90,7 @@ export default function AddRoom({ closeAddSchedule }: ScheduleModalProps) {
 
     if (response.status == 200) {
       const currentSchedule = await fetch(
-        `http://3.106.143.91/api/schedules/oneday_oneteacher/${formattedDate}/${teacherName}`
+        `http://13.54.77.128/api/schedules/oneday_oneteacher/${formattedDate}/${teacherName}`
       );
       const data_currentSchedule = await currentSchedule.json();
 
