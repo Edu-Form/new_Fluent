@@ -31,7 +31,7 @@ const SchedulePage = () => {
   const openVariousSchedule = () => setIsVariousRoomOpen(true); // 다양한 스케줄 모달 열기
   const closeVariousSchedule = () => setIsVariousRoomOpen(false); // 다양한 스케줄 모달 닫기
 
-  const URL = `http://13.239.158.4/api/schedules/${type}/${user}`;
+  const URL = `http://13.54.77.128/api/schedules/${type}/${user}`;
 
   useEffect(() => {
     if (!user || classes.length > 0) return;
