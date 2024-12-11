@@ -6,6 +6,7 @@ import EnterBtn from "@/components/EnterBtn/EnterBtn";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { Suspense } from "react";
+import Announcement from "@/components/Announcement/Announcement";
 
 const HomePage = () =>  {
   const searchParams = useSearchParams();
@@ -40,7 +41,7 @@ const HomePage = () =>  {
             <div className="flex justify-center flex-col  w-[45rem] h-[40rem] rounded-[0.5rem] border-[0.1rem] bg-white  cursor-pointer duration-300 ease-in-out transform hover:border-blue-600 hover:drop-shadow-xl">
               <div onClick={Schedule}>
                 <div className="flex justify-center ">
-                    Schedule
+                    <Announcement />
                 </div>
               </div>
             </div>
