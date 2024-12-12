@@ -15,6 +15,8 @@ const EnterBtn: React.FC<BtnProps> = ({ id, image }) => {
         return { main: "QUIZLET", sub: "Quizlet의 한줄소개" };
       case "diary":
         return { main: "DIARY", sub: "Diary의 한줄소개" };
+      case "schedule":
+        return {main: "Schedule, sub: Schedule 더보기"}
       case "ai":
         return { main: "AI", sub: "AI의 한줄소개" };
       default:

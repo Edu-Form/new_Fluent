@@ -7,6 +7,7 @@ import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { Suspense } from "react";
 import Announcement from "@/components/Announcement/Announcement";
+import Navigation from "@/components/navigation";
 
 const HomePage = () =>  {
   const searchParams = useSearchParams();
@@ -39,7 +40,7 @@ const HomePage = () =>  {
         <div className="relative z-10 flex justify-center gap-10 ">
           <div className="flex  justify-center mt-20">
             <div className="flex justify-center flex-col  w-[45rem] h-[40rem] rounded-[0.5rem] border-[0.1rem] bg-white  cursor-pointer duration-300 ease-in-out transform hover:border-blue-600 hover:drop-shadow-xl">
-              <div onClick={Schedule}>
+              <div>
                 <div className="flex justify-center ">
                     <Announcement />
                 </div>
@@ -48,7 +49,7 @@ const HomePage = () =>  {
           </div>
 
           <div className="flex flex-col  h-[40rem] justify-between  items-center mt-20">
-            <legend className="relative flex  justify-center w-full h-[20rem] text-xl font-bold font-sans mb-8 bg-white rounded-[0.5rem] border-[0.1rem] ">
+            <legend className="relative flex  justify-center w-full h-[20rem] text-xl font-bold font-sans mb-8 bg-white rounded-[0.5rem] border-[0.1rem] " onClick={Schedule}>
               TO DO LIST
             </legend>
 

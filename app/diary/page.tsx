@@ -1,7 +1,7 @@
 "use client";
 
 import Lottie from "lottie-react";
-import timerAnimationData from "@/app/assets/lotties/mainLoading.json";
+import timerAnimationData from "@/app/lotties/mainLoading.json";
 
 import Image from "next/image";
 import { useEffect, useState, Suspense } from "react";
@@ -12,11 +12,14 @@ import DiaryBg from "@/public/images/diarymain.svg";
 import DiaryCard from "@/components/Diary/DiaryCard";
 import DiaryNavigation from "@/components/Diary/DiaryNavigation";
 
+
 const DiaryPage = () => {
   const [diaryData, setDiaryData] = useState<DiaryData[]>([]); //types에 명시된 타입을 가져오게 함
   const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
-  const student_name = searchParams.get("user"); // 쿼리 파라미터에서 student_name을 가져옴
+  const user = searchParams.get("user");
+  const type = searchParams.get("type");
+  const user_id = searchParams.get("id");
 
   const variants: { [key: string]: any } = {
     hidden: {
@@ -38,20 +41,20 @@ const DiaryPage = () => {
   useEffect(() => {
     // 비동기 데이터 로딩 함수
     const fetchData = async () => {
-      const URL = `http://13.54.77.128/api/diary/student/${student_name}`;
+      const URL = `http://13.54.77.128/api/diary/${type}/${user}`;
       try {
         const res = await fetch(URL, { cache: "no-store" });
         const data = await res.json();
         setDiaryData(data); // 가져온 데이터를 상태에 설정
       } catch (error) {
-        console.error("값을 불러오지 못 합니다", URL);
+        console.log("Error");
       } finally {
         setLoading(false); // 로딩 완료
       }
     };
 
     fetchData(); // 데이터 요청 함수 호출
-  }, [student_name]); // 컴포넌트가 처음 렌더링될 때만 실행
+  }, [user]); // 컴포넌트가 처음 렌더링될 때만 실행
 
   if (loading) {
     return (
