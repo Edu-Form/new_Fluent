@@ -19,6 +19,9 @@ const content = {
 
 const QuizletPage = () => {
   const searchParams = useSearchParams();
+  const user = searchParams.get("user");
+  const type = searchParams.get("type");
+  const user_id = searchParams.get("id");
   const show = searchParams.get("show");
 
   const [selectQuizlet, setSelectQuizlet] = useState(false);
@@ -27,8 +30,6 @@ const QuizletPage = () => {
 
   const [data, setData] = useState<QuizletCardProps[]>([]);
   const [currentCard, setCurrentCard] = useState<QuizletCardProps | null>(null);
-
-  const studentName = "Phil"; // 학생 이름 고정
 
   function showQuizlet() {
     if (!selectQuizlet) {
@@ -42,10 +43,11 @@ const QuizletPage = () => {
   const fetchQuizletData = async () => {
     try {
       const response = await fetch(
-        `http://13.54.77.128/api/quizlet/student/${studentName}`
+        `http://13.54.77.128/api/quizlet/${type}/${user}`
       );
       const quizletData: QuizletCardProps[] = await response.json();
       setData(quizletData);
+      setCurrentCard(quizletData[0])
     } catch (error) {
       console.error("Failed to fetch quizlet data:", error);
     }

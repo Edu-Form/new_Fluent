@@ -5,6 +5,7 @@ import Link from "next/link";
 import EnterButton from "../Button/Button";
 import DiaryModal from "@/components/Diary/DiaryModal";
 import { motion } from "framer-motion";
+import { useSearchParams } from "next/navigation";
 
 //edit button
 const content = {
@@ -16,6 +17,8 @@ const content = {
 const DiaryNavigation = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const searchParams = useSearchParams();
+  const today_date = searchParams.get("today_date");
 
   const openIsModal = () => setIsModalOpen(true);
   const closeIsModal = () => setIsModalOpen(false);
@@ -62,7 +65,7 @@ const DiaryNavigation = () => {
           <EnterButton content={content.write} />
         </div>
         {/* 모달 */}
-        {isModalOpen && <DiaryModal closeIsModal={closeIsModal} />}
+        {isModalOpen && <DiaryModal closeIsModal={closeIsModal} next_class_date={today_date || undefined}/>}
       </div>
 
       {scrollPosition >= 500 && (

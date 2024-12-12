@@ -2,13 +2,17 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Lottie from "lottie-react";
-import timerAnimationData from "@/app/assets/lotties/timeLoading.json";
+import timerAnimationData from "@/app/lotties/timeLoading.json";
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/dist/style.css";
 
 interface QuizeletlModalProps {
   closeIsModal: () => void;
+  next_class_date?: string;
 }
 
-export default function DiaryModal({ closeIsModal }: QuizeletlModalProps) {
+export default function DiaryModal({ closeIsModal, next_class_date }: QuizeletlModalProps) {
+
   const router = useRouter();
   const [class_date, setClassDate] = useState(""); // 수업 날짜 state 추가
   const [date, setDate] = useState("");
@@ -50,6 +54,39 @@ export default function DiaryModal({ closeIsModal }: QuizeletlModalProps) {
     }
   };
 
+  const today_formatted = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+    const day = String(today.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  // To change to display from 2024. 12. 12. to the 2024-12-12 format. 
+  const formatToISO = (date: string | undefined ) => {
+    try {
+      if (date != undefined ){
+          // Converts "YYYY. MM. DD." to "YYYY-MM-DD"
+          const parts = date.trim().replace(/\.$/, "").split(". ");
+          if (parts.length === 3) {
+            const [year, month, day] = parts;
+            console.log(`${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`)
+            return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+      }}
+    } catch {
+      console.log("")
+      return ""
+    }
+    ; // Fallback for invalid date
+  };
+
+  // To change the date format from 2024-12-12 to 2024. 12. 12. 
+  const formatToSave = (date: string | undefined) => {
+    if (!date) return "";
+    const [year, month, day] = date.split("-");
+    return `${year}. ${month}. ${day}.`;
+  };
+
   return (
     <dialog id="my_modal_3" className="modal bg-slate-400 bg-opacity-50" open>
       <div className="flex flex-row relative">
@@ -88,7 +125,8 @@ export default function DiaryModal({ closeIsModal }: QuizeletlModalProps) {
                   type="date"
                   name="class_date"
                   id="class_date"
-                  onChange={(e) => setClassDate(e.target.value)}
+                  defaultValue = {formatToISO(next_class_date)}
+                  onChange={(e) => setClassDate(formatToSave(e.target.value))}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   required={true}
                   disabled={loading} // 로딩 중에는 입력 비활성화
@@ -106,7 +144,8 @@ export default function DiaryModal({ closeIsModal }: QuizeletlModalProps) {
                   type="date"
                   name="date"
                   id="date"
-                  onChange={(e) => setDate(e.target.value)}
+                  defaultValue = {today_formatted()}
+                  onChange={(e) => setDate(formatToSave(e.target.value))}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   required={true}
                   disabled={loading} // 로딩 중에는 입력 비활성화
