@@ -55,7 +55,7 @@ const QuizletPage = () => {
 
   useEffect(() => {
     fetchQuizletData();
-  }, []);
+  }, [fetchQuizletData]);
 
   const showQuizletCards = (e: React.MouseEvent<HTMLButtonElement>) => {
     const selectedDate = e.currentTarget.value;

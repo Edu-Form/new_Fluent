@@ -56,7 +56,7 @@ const DiaryPage = ({student_list} : any) => {
       } else {
       }}  
     fetchData(); // 데이터 요청 함수 호출
-  }, [user]); // 컴포넌트가 처음 렌더링될 때만 실행
+  }, [user, type]); // 컴포넌트가 처음 렌더링될 때만 실행
 
   if (loading) {
     return (
@@ -80,7 +80,7 @@ const DiaryPage = ({student_list} : any) => {
         />
 
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-0 text-center">
-          <span className="text-white text-3xl">{user}'s' Diary.</span>
+          <span className="text-white text-3xl">{user}&apos;s Diary.</span>
           <span className="animate-blink text-white text-4xl">|</span>
         </div>
 
@@ -135,7 +135,7 @@ export default function Diary() {
       }
     };
     fetchData()
-  }, [user]) 
+  }, [user, type]) 
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
