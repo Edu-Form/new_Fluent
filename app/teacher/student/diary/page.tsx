@@ -12,7 +12,6 @@ import DiaryBg from "@/public/images/diarymain.svg";
 import DiaryCard from "@/components/Diary/DiaryCard";
 import DiaryNavigation from "@/components/Diary/DiaryNavigation";
 
-
 const DiaryPage = () => {
   const [diaryData, setDiaryData] = useState<DiaryData[]>([]); //types에 명시된 타입을 가져오게 함
   const [loading, setLoading] = useState(true);
@@ -21,7 +20,6 @@ const DiaryPage = () => {
   const type = searchParams.get("type");
   const student_name = searchParams.get("student_name");
   const user_id = searchParams.get("id");
-
 
   const variants: { [key: string]: any } = {
     hidden: {
@@ -45,18 +43,17 @@ const DiaryPage = () => {
     const fetchData = async () => {
       const URL = `http://13.54.77.128/api/diary/student/${student_name}`;
       try {
-        const res = await fetch(URL, { cache: 'no-store' });
+        const res = await fetch(URL, { cache: "no-store" });
         const data = await res.json();
         setDiaryData(data); // 가져온 데이터를 상태에 설정
       } catch (error) {
-        console.log('Error fetching data:', error);
+        console.log("Error fetching data:", error);
       } finally {
         setLoading(false); // 로딩 완료
       }
     };
-    fetchData()
-
-  }, [student_name]); 
+    fetchData();
+  }, [student_name]);
 
   if (loading) {
     return (
@@ -80,7 +77,9 @@ const DiaryPage = () => {
         />
 
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-0 text-center">
-          <span className="text-white text-3xl">{student_name}&apos;s Diary.</span>
+          <span className="text-white text-3xl">
+            {student_name}&apos;s Diary.
+          </span>
           <span className="animate-blink text-white text-4xl">|</span>
         </div>
 
@@ -101,8 +100,7 @@ const DiaryPage = () => {
         <div className=" relative px-60 h-[80vh] hide-scrollbar">
           <DiaryCard
             diarydata={diaryData.sort(
-              (a, b) =>
-                new Date(b.date).getTime() - new Date(a.date).getTime()
+              (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
             )}
           />
         </div>
@@ -114,11 +112,10 @@ const DiaryPage = () => {
         }
       `}</style>
     </>
-  ) 
+  );
 };
 
 export default function Diary() {
-
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <div className="relative">
