@@ -37,7 +37,7 @@ const HomePage = () => {
 
       <div className="relative z-10 flex justify-center gap-10 ">
         <div className="flex  justify-center mt-20">
-          <div className="flex flex-col relative w-[45rem] h-[40rem] rounded-[0.5rem] border-[0.1rem] bg-gradient-to-br from-[#666186] to-[#1f1545] cursor-pointer duration-300 ease-in-out transform hover:border-blue-600 hover:drop-shadow-xl">
+          <div className="flex flex-col relative w-[45rem] h-[40rem] rounded-[0.5rem] border-[0.1rem] bg-gradient-to-br from-[#e7cfb4] to-[#f0e9d4] cursor-pointer duration-300 ease-in-out transform hover:border-blue-600 hover:drop-shadow-xl">
             {/* <Image
               src={"/images/mainPage.svg"}
               alt=""
