@@ -8,43 +8,16 @@ import Button from "../Button/Button";
 
 
 interface ScheduleData {
-    date: string;
-    duration: number;
     room_name: string;
     student_name: string;
-    teacher_name: string;
-    time: number;
+    time: string;
+    time_range: string;
   }
 
 interface RoomData {
     room_name: string;
     description: string;
 }
-
-function next_schedule(data: any){
-    const today = new Date();
-  
-    // Format today's date to match the input data format
-    const formattedToday = today.toLocaleDateString("ko-KR", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    });
-
-    console.log(formattedToday)
-
-    // Iterate over the sorted data to find the first valid schedule
-    for (const item of data) {
-        if (item.date >= formattedToday) { // String comparison
-        console.log("Next class:", item);
-        return item; // Return the first valid schedule
-        }
-    }
-
-    // If no valid schedule is found
-    console.log("No upcoming classes found.");
-    return null;
-};
 
 function room_description(data: any, next_schedule_data: any){
     for (const item of data) {
@@ -63,26 +36,37 @@ function convertTo12HourFormat(time24: any) {
     return `${hours12} ${suffix}`;
 }
 
+const today_formatted = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+    const day = String(today.getDate()).padStart(2, "0");
+    return `${year}. ${month}. ${day}.`;
+  };
+
 const AnnouncementPage = () => {
     const searchParams = useSearchParams();
     const user = searchParams.get("user");
     const type = searchParams.get("type");
     const user_id = searchParams.get("id");
+    const today = today_formatted();
+    const [day_schedule_data, setDay_schedule_data] = useState([])
     const [next_schedule_data, setNext_schedule_data] = useState<ScheduleData | null>(null);
     const [room_data, setRoom_data] = useState<RoomData | null>(null);
-    const [next_schedule_data_url, setNext_schedule_data_url] = useState(`/diary?user=${user}&type=${type}&id=${user_id}`)
+    const [current_schedule_index, setCurrent_schedule_index] = useState(0)
 
     useEffect(() => {
         // 비동기 데이터 로딩 함수
         const fetchData = async () => {
-          const URL = `http://13.54.77.128/api/schedules/${type}/${user}`;
+
+          const URL = `http://13.54.77.128/api/schedules/oneday_oneteacher/${today}/${user}`;
           try {
             const res = await fetch(URL, { cache: "no-store" });
             const data = await res.json();
             console.log(data)
-            const next = await next_schedule(data);
-            setNext_schedule_data(next) // 가져온 데이터를 상태에 설정
-            fetchRoomData(next)
+            const next = setDay_schedule_data(data);
+            setNext_schedule_data(data[current_schedule_index]) // 가져온 데이터를 상태에 설정
+            fetchRoomData(data[current_schedule_index])
           } catch (error) {
             console.log("Error")
           }
@@ -100,75 +84,27 @@ const AnnouncementPage = () => {
             };
         };
         fetchData(); // 데이터 요청 함수 호출
-    }, [user, type]); // 컴포넌트가 처음 렌더링될 때만 실행
+    }, [user, today]); // 컴포넌트가 처음 렌더링될 때만 실행
 
+    function updateScheduleIndex() {
+        let nextIndex;
+        if (current_schedule_index === day_schedule_data.length - 1) {
+            nextIndex = 0; // Reset to 0 if at the end
+        } else {
+            nextIndex = current_schedule_index + 1; // Increment normally
+        }
+        setCurrent_schedule_index(nextIndex); // Update the index
+        setNext_schedule_data(day_schedule_data[nextIndex]); // Set next schedule data based on calculated index
+    }
 
-    useEffect(() => {
-        if (next_schedule_data != null)
-        setNext_schedule_data_url(`/diary?user=${user}&type=${type}&id=${user_id}&today_date=${next_schedule_data.date}`)
-    }, [next_schedule_data, type, user, user_id])
-
-    return type == "student" ? (
-        <div className="text-center font-bold">
-            <h1 className="text-2xl mb-4 text-gray-800">Hi, {user}!</h1>
-            <div className="mb-6">
-                <div className="flex flex-col">
-                    <p className="text-lg text-gray-700">
-                        <span className="font-semibold">Next class:</span>{" "}
-                        {next_schedule_data ? next_schedule_data.date : "No upcoming classes"}
-                    </p>
-                    <p className="text-lg text-gray-700">
-                        <span className="font-semibold">Time:</span>{" "}
-                        {next_schedule_data ? convertTo12HourFormat(next_schedule_data.time) : "N/A"}
-                    </p>
-                    <p className="text-lg text-gray-700">
-                        <span className="font-semibold">Where:</span>{" "}
-                        {next_schedule_data && room_data
-                            ? `${next_schedule_data.room_name} - ${room_data.description}`
-                            : "N/A"}
-                    </p>
-                    <Link
-                        className="text-xs text-green-500 hover:text-green-700"
-                        href={`/schedule?user=${user}&type=${type}&id=${user_id}`}
-                        >
-                        For more details...
-                    </Link>
-                </div>
-            </div>
-            <div className="mb-6 text-gray-800">
-                <p className="text-lg">Did you check everything for your class?</p>
-                <ul className="list-disc list-inside text-left mt-4 space-y-2">
-                <li>
-                    <span className="text-gray-700">Study the Quizlet</span>{" "}
-                    <Link
-                    className="text-blue-500 underline hover:text-blue-700"
-                    href={`/quizlet?user=${user}&type=${type}&id=${user_id}`}
-                    >
-                    Click here
-                    </Link>
-                </li>
-                <li>
-                    <span className="text-gray-700">Write the Diary</span>{" "}
-                    <Link
-                    className="text-red-500 underline hover:text-red-700"
-                    href={next_schedule_data_url}
-                    >
-                    Click here
-                    </Link>
-                </li>
-                </ul>
-            </div>
-        </div>
-
-    ) 
-    : type == "teacher" ? (
+    return (
         <div className="text-center font-bold">
             <h1 className="text-2xl mb-4 text-gray-800">Hi, {user}!</h1>
             <div className="mb-8">
                 <div className="flex flex-col">
                     <p className="text-lg text-gray-700">
-                        <span className="font-semibold">Next class:</span>{" "}
-                        {next_schedule_data ? next_schedule_data.date : "No upcoming classes"}
+                        <span className="font-semibold">Your classes today:</span>{" "}
+                        {current_schedule_index + 1}/{day_schedule_data.length}
                     </p>
                     <p className="text-lg text-gray-700">
                         <span className="font-semibold">Time:</span>{" "}
@@ -208,7 +144,7 @@ const AnnouncementPage = () => {
                     <span className="text-gray-700">Check the Diary</span>{" "}
                     <Link
                     className="text-red-500 underline hover:text-red-700"
-                    href={next_schedule_data_url}
+                    href={next_schedule_data ? `/teacher/student/diary?user=${user}&type=${type}&id=${user_id}&student_name=${next_schedule_data?.student_name}` : `/quizlet?/quizlet?user=${user}&type=${type}&id=${user_id}`}
                     >
                     Click here
                     </Link>
@@ -217,7 +153,7 @@ const AnnouncementPage = () => {
                     <span className="text-gray-700">Create Notecards</span>{" "}
                     <Link
                     className="text-yellow-500 underline hover:text-yellow-700"
-                    href={`/quizlet?user=${user}&type=${type}&id=${user_id}`}
+                    href={next_schedule_data ? `/teacher/student/quizlet?user=${user}&type=${type}&id=${user_id}&student_name=${next_schedule_data?.student_name}` : `/quizlet?/quizlet?user=${user}&type=${type}&id=${user_id}`}
                     >
                     Click here
                     </Link>
@@ -232,9 +168,10 @@ const AnnouncementPage = () => {
                 </li>
                 </ul>
             </div>
+            <div onClick={updateScheduleIndex}>Next Schedule</div>
+            <div className="h-24 w-full bg-center bg-cover bg-no-repeat" style={{ backgroundImage: "url('/images/flower.png')", backgroundSize: "100px", }}>
+            </div>
         </div>
-    ) : (
-        <div>No type</div>
     )
   }; 
 
