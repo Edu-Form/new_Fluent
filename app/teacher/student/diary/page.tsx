@@ -80,7 +80,7 @@ const DiaryPage = () => {
         />
 
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-0 text-center">
-          <span className="text-white text-3xl">{student_name}'s' Diary.</span>
+          <span className="text-white text-3xl">{student_name}&apos;s Diary.</span>
           <span className="animate-blink text-white text-4xl">|</span>
         </div>
 

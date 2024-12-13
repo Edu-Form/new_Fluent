@@ -56,7 +56,7 @@ const QuizletPage = () => {
 
   useEffect(() => {
     fetchQuizletData();
-  }, []);
+  }, [fetchQuizletData]);
 
   const showQuizletCards = (e: React.MouseEvent<HTMLButtonElement>) => {
     const selectedDate = e.currentTarget.value;
@@ -74,7 +74,7 @@ const QuizletPage = () => {
           </Link>
         </div>
         <p className="px-5 my-8 text-gray-400 text-sm font-semibold">
-          {student_name}'s Quizlets
+          {student_name}&apos;s Quizlets
         </p>
         <div className="flex flex-col gap-10">
           <div className="flex flex-col " onClick={showQuizlet}>

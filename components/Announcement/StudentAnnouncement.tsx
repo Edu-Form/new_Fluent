@@ -105,14 +105,14 @@ const AnnouncementPage = () => {
       }
     };
     fetchData(); // 데이터 요청 함수 호출
-  }, [user]); // 컴포넌트가 처음 렌더링될 때만 실행
+  }, [user, type]); // 컴포넌트가 처음 렌더링될 때만 실행
 
   useEffect(() => {
     if (next_schedule_data != null)
       setNext_schedule_data_url(
         `/diary?user=${user}&type=${type}&id=${user_id}&today_date=${next_schedule_data.date}`
       );
-  }, [next_schedule_data]);
+  }, [next_schedule_data, type, user, user_id]);
 
   return (
     <div className="flex flex-col z-50 font-bold">

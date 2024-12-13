@@ -100,13 +100,13 @@ const AnnouncementPage = () => {
             };
         };
         fetchData(); // 데이터 요청 함수 호출
-    }, [user]); // 컴포넌트가 처음 렌더링될 때만 실행
+    }, [user, type]); // 컴포넌트가 처음 렌더링될 때만 실행
 
 
     useEffect(() => {
         if (next_schedule_data != null)
         setNext_schedule_data_url(`/diary?user=${user}&type=${type}&id=${user_id}&today_date=${next_schedule_data.date}`)
-    }, [next_schedule_data])
+    }, [next_schedule_data, type, user, user_id])
 
     return type == "student" ? (
         <div className="text-center font-bold">
@@ -227,7 +227,7 @@ const AnnouncementPage = () => {
                     className="text-gray-500 underline hover:text-gray-700"
                     href={`https://cedar-cowl-36f.notion.site/Teacher-s-guide-for-FLUENT-9e483e59fc674fc1a9bcfd4134f574e5`}
                     >
-                    The General Teacher's Guide 
+                    The General Teacher&apos;s Guide 
                     </Link>
                 </li>
                 </ul>

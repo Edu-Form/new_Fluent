@@ -30,7 +30,7 @@ const Student_List = ({data} : any) =>  {
                 {data.map((item: string[], index: number) => (
                     <div key={index} className="w-36 h-36 border-2 border-blue-500 rounded-lg flex justify-center items-center bg-gray-100 hover:bg-blue-500 hover:text-white transform hover:scale-105 transition-all duration-300">
                     <Link href={`/teacher/student/${func}?${url_data}&student_name=${item[0]}`}>
-                        <div className="text-center font-semibold">{item[0]}'s diary</div>
+                        <div className="text-center font-semibold">{item[0]}&apos;s diary</div>
                     </Link>
                     </div>
                 ))}
@@ -64,7 +64,7 @@ export default function Home() {
         } // 데이터 요청 함수 호출
 
         fetchData()
-    }, [user]); // 컴포넌트가 처음 렌더링될 때만 실행
+    }, [user, type]); // 컴포넌트가 처음 렌더링될 때만 실행
 
     return (
         <Suspense fallback={<div>Loading...</div>}>
