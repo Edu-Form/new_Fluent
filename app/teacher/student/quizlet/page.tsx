@@ -19,16 +19,15 @@ const content = {
 
 const QuizletPage = () => {
   const searchParams = useSearchParams();
-  const user = searchParams.get("user");
-  const type = searchParams.get("type");
-  const user_id = searchParams.get("id");
   const student_name = searchParams.get("student_name");
-  const show = searchParams.get("show");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openIsModal = () => setIsModalOpen(true);
+  const closeIsModal = () => setIsModalOpen(false);
 
   const [selectQuizlet, setSelectQuizlet] = useState(false);
   // const [createData, setCreateData] = useState("");
   const [cardsets, setCardsets] = useState<QuizletCardProps[]>([]);
-
   const [data, setData] = useState<QuizletCardProps[]>([]);
   const [currentCard, setCurrentCard] = useState<QuizletCardProps | null>(null);
 
@@ -41,14 +40,14 @@ const QuizletPage = () => {
     }
   }
 
-  const fetchQuizletData = useCallback( async () => {
+  const fetchQuizletData = useCallback(async () => {
     try {
       const response = await fetch(
         `http://13.54.77.128/api/quizlet/student/${student_name}`
       );
       const quizletData: QuizletCardProps[] = await response.json();
       setData(quizletData);
-      setCurrentCard(quizletData[0])
+      setCurrentCard(quizletData[0]);
     } catch (error) {
       console.error("Failed to fetch quizlet data:", error);
     }
@@ -96,10 +95,16 @@ const QuizletPage = () => {
               )}
             </div>
           </div>
-
           {cardsets.map((card) => (
             <div key={card._id}>{card.date}</div>
           ))}
+          <div
+            className={`font-['Playwrite']`} // 스크롤 500 이상일 때 버튼 숨김
+            onClick={openIsModal}
+          >
+            <EnterButton content={content.write} />
+          </div>
+          {isModalOpen && <QuizletModal closeIsModal={closeIsModal} />}
         </div>
       </div>
 
@@ -129,7 +134,6 @@ const QuizletPage = () => {
           />
         </div>
       </div>
-      {show && <QuizletModal />}
     </div>
   );
 };

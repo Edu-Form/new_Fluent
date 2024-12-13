@@ -7,7 +7,6 @@ import EnterButton from "@/components/Button/Button";
 import { useSearchParams } from "next/navigation";
 
 import QuizletCard from "@/components/Quizlet/QuizletCard";
-import QuizletModal from "@/components/Quizlet/QuizletModal";
 
 // Edit button
 const content = {
@@ -22,7 +21,6 @@ const QuizletPage = () => {
   const user = searchParams.get("user");
   const type = searchParams.get("type");
   const user_id = searchParams.get("id");
-  const show = searchParams.get("show");
 
   const [selectQuizlet, setSelectQuizlet] = useState(false);
   // const [createData, setCreateData] = useState("");
@@ -47,7 +45,7 @@ const QuizletPage = () => {
       );
       const quizletData: QuizletCardProps[] = await response.json();
       setData(quizletData);
-      setCurrentCard(quizletData[0])
+      setCurrentCard(quizletData[0]);
     } catch (error) {
       console.error("Failed to fetch quizlet data:", error);
     }
@@ -128,7 +126,6 @@ const QuizletPage = () => {
           />
         </div>
       </div>
-      {show && <QuizletModal />}
     </div>
   );
 };
