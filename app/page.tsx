@@ -38,8 +38,14 @@ export default function Page() {
         console.log(data)
         if (data){
           console.log(data[0].user_name)
-          const url = `/home?user=${data[0].user_name}&type=${data[0].type}&id=${data[0].user_number}`
-          router.push(url)
+          if (data[0].type == "student"){
+            const url = `/home?user=${data[0].user_name}&type=${data[0].type}&id=${data[0].user_number}`
+            router.push(url)
+          } else if (data[0].type == "teacher"){
+            const url = `/teacher/home?user=${data[0].user_name}&type=${data[0].type}&id=${data[0].user_number}`
+            router.push(url)
+          }
+
         }
       }
     } catch {

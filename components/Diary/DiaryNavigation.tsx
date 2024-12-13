@@ -14,7 +14,7 @@ const content = {
   write: "Write Diary",
 };
 
-const DiaryNavigation = () => {
+const DiaryNavigation = ({studentList}:any) => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const searchParams = useSearchParams();
