@@ -117,7 +117,7 @@ const DiaryPage = ({student_list} : any) => {
   ) 
 };
 
-export default function Diary() {
+const Diary = () => {
   const searchParams = useSearchParams();
   const user = searchParams.get("user");
   const type = searchParams.get("type");
@@ -145,6 +145,14 @@ export default function Diary() {
         </div>
         <DiaryPage />
       </div>
+    </Suspense>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Diary />
     </Suspense>
   );
 }
