@@ -58,7 +58,6 @@ function room_description(data: any, next_schedule_data: any){
 }
 
 function convertTo12HourFormat(time24: any) {
-    console.log(time24)
     const suffix = time24 >= 12 ? "PM" : "AM";
     const hours12 = time24 % 12 || 12;  // Convert 0 to 12 for midnight
     return `${hours12} ${suffix}`;
@@ -109,7 +108,7 @@ const AnnouncementPage = () => {
         setNext_schedule_data_url(`/diary?user=${user}&type=${type}&id=${user_id}&today_date=${next_schedule_data.date}`)
     }, [next_schedule_data])
 
-    return (
+    return type == "student" ? (
         <div className="text-center font-bold">
             <h1 className="text-2xl mb-4 text-gray-800">Hi, {user}!</h1>
             <div className="mb-6">
@@ -161,8 +160,83 @@ const AnnouncementPage = () => {
             </div>
         </div>
 
-    );
-  };
+    ) 
+    : type == "teacher" ? (
+        <div className="text-center font-bold">
+            <h1 className="text-2xl mb-4 text-gray-800">Hi, {user}!</h1>
+            <div className="mb-8">
+                <div className="flex flex-col">
+                    <p className="text-lg text-gray-700">
+                        <span className="font-semibold">Next class:</span>{" "}
+                        {next_schedule_data ? next_schedule_data.date : "No upcoming classes"}
+                    </p>
+                    <p className="text-lg text-gray-700">
+                        <span className="font-semibold">Time:</span>{" "}
+                        {next_schedule_data ? convertTo12HourFormat(next_schedule_data.time) : "N/A"}
+                    </p>
+                    <p className="text-lg text-gray-700">
+                        <span className="font-semibold">With:</span>{" "}
+                        {next_schedule_data ? next_schedule_data.student_name : "N/A"}
+                    </p>
+                    <p className="text-lg text-gray-700">
+                        <span className="font-semibold">Where:</span>{" "}
+                        {next_schedule_data && room_data
+                            ? `${next_schedule_data.room_name} - ${room_data.description}`
+                            : "N/A"}
+                    </p>
+                    <Link
+                        className="text-xs text-green-500 hover:text-green-700"
+                        href={`/schedule?user=${user}&type=${type}&id=${user_id}`}
+                        >
+                        For more details...
+                    </Link>
+                </div>
+            </div>
+            <div className="mb-6 text-gray-800">
+                <p className="text-lg">Here are all class materials for {next_schedule_data != null ? next_schedule_data.student_name : "your next class:"}:</p>
+                <ul className="list-disc list-inside text-left mt-4 space-y-2">
+                <li>
+                    <span className="text-gray-700">Test the Quizlet</span>{" "}
+                    <Link
+                    className="text-blue-500 underline hover:text-blue-700"
+                    href={next_schedule_data ? `/teacher/student/quizlet?user=${user}&type=${type}&id=${user_id}&student_name=${next_schedule_data?.student_name}` : `/quizlet?/quizlet?user=${user}&type=${type}&id=${user_id}`}
+                    >
+                    Click here
+                    </Link>
+                </li>
+                <li>
+                    <span className="text-gray-700">Check the Diary</span>{" "}
+                    <Link
+                    className="text-red-500 underline hover:text-red-700"
+                    href={next_schedule_data_url}
+                    >
+                    Click here
+                    </Link>
+                </li>
+                <li>
+                    <span className="text-gray-700">Create Notecards</span>{" "}
+                    <Link
+                    className="text-yellow-500 underline hover:text-yellow-700"
+                    href={`/quizlet?user=${user}&type=${type}&id=${user_id}`}
+                    >
+                    Click here
+                    </Link>
+                </li>
+                <li>
+                    <Link
+                    className="text-gray-500 underline hover:text-gray-700"
+                    href={`https://cedar-cowl-36f.notion.site/Teacher-s-guide-for-FLUENT-9e483e59fc674fc1a9bcfd4134f574e5`}
+                    >
+                    The General Teacher's Guide 
+                    </Link>
+                </li>
+                </ul>
+            </div>
+        </div>
+    ) : (
+        <div>No type</div>
+    )
+  }; 
 
   export default function Announcement() {
     return (

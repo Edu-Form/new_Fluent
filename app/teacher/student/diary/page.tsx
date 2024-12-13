@@ -13,12 +13,13 @@ import DiaryCard from "@/components/Diary/DiaryCard";
 import DiaryNavigation from "@/components/Diary/DiaryNavigation";
 
 
-const DiaryPage = ({student_list} : any) => {
+const DiaryPage = () => {
   const [diaryData, setDiaryData] = useState<DiaryData[]>([]); //types에 명시된 타입을 가져오게 함
   const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
   const user = searchParams.get("user");
   const type = searchParams.get("type");
+  const student_name = searchParams.get("student_name");
   const user_id = searchParams.get("id");
 
 
@@ -42,21 +43,20 @@ const DiaryPage = ({student_list} : any) => {
   useEffect(() => {
     // 비동기 데이터 로딩 함수
     const fetchData = async () => {
-      if (type == "student"){
-        const URL = `http://13.54.77.128/api/diary/${type}/${user}`;
-        try {
-          const res = await fetch(URL, { cache: "no-store" });
-          const data = await res.json();
-          setDiaryData(data); // 가져온 데이터를 상태에 설정
-        } catch (error) {
-          console.log("Error");
-        } finally {
-          setLoading(false); // 로딩 완료
-        } 
-      } else {
-      }}  
-    fetchData(); // 데이터 요청 함수 호출
-  }, [user]); // 컴포넌트가 처음 렌더링될 때만 실행
+      const URL = `http://13.54.77.128/api/diary/student/${student_name}`;
+      try {
+        const res = await fetch(URL, { cache: 'no-store' });
+        const data = await res.json();
+        setDiaryData(data); // 가져온 데이터를 상태에 설정
+      } catch (error) {
+        console.log('Error fetching data:', error);
+      } finally {
+        setLoading(false); // 로딩 완료
+      }
+    };
+    fetchData()
+
+  }, [student_name]); 
 
   if (loading) {
     return (
@@ -80,7 +80,7 @@ const DiaryPage = ({student_list} : any) => {
         />
 
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-0 text-center">
-          <span className="text-white text-3xl">{user}'s' Diary.</span>
+          <span className="text-white text-3xl">{student_name}'s' Diary.</span>
           <span className="animate-blink text-white text-4xl">|</span>
         </div>
 
@@ -121,21 +121,6 @@ export default function Diary() {
   const searchParams = useSearchParams();
   const user = searchParams.get("user");
   const type = searchParams.get("type");
-  const [student_list, setStudentList] = useState([])
-
-  useEffect(() => {
-    // 비동기 데이터 로딩 함수
-    const fetchData = async () => {
-      if (type == "teacher") {
-        const URL = `http://13.54.77.128/api/diary/${type}/${user}`;
-        const res = await fetch(URL);
-        const diary_url_list = await res.json();
-        console.log(diary_url_list)
-        setStudentList(diary_url_list)
-      }
-    };
-    fetchData()
-  }, [user]) 
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
