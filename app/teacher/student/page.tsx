@@ -44,7 +44,7 @@ const Student_List = ({data} : any) =>  {
   ) 
 }
 
-export default function Home() {
+const Home = () => {
 
     const searchParams = useSearchParams();
     const user = searchParams.get("user");
@@ -75,4 +75,12 @@ export default function Home() {
             )}
         </Suspense>
     );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Home />
+    </Suspense>
+  );
 }

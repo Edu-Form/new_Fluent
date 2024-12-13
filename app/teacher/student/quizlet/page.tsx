@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useCallback } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import EnterButton from "@/components/Button/Button";
@@ -41,7 +41,7 @@ const QuizletPage = () => {
     }
   }
 
-  const fetchQuizletData = async () => {
+  const fetchQuizletData = useCallback( async () => {
     try {
       const response = await fetch(
         `http://13.54.77.128/api/quizlet/student/${student_name}`
@@ -52,7 +52,7 @@ const QuizletPage = () => {
     } catch (error) {
       console.error("Failed to fetch quizlet data:", error);
     }
-  };
+  }, [student_name]);
 
   useEffect(() => {
     fetchQuizletData();

@@ -118,9 +118,6 @@ const DiaryPage = () => {
 };
 
 export default function Diary() {
-  const searchParams = useSearchParams();
-  const user = searchParams.get("user");
-  const type = searchParams.get("type");
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
