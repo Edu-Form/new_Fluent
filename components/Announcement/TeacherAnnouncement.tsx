@@ -84,7 +84,7 @@ const AnnouncementPage = () => {
             };
         };
         fetchData(); // 데이터 요청 함수 호출
-    }, [user, today]); // 컴포넌트가 처음 렌더링될 때만 실행
+    }, [user, today, current_schedule_index]); // 컴포넌트가 처음 렌더링될 때만 실행
 
     function updateScheduleIndex() {
         let nextIndex;
