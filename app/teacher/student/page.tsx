@@ -26,14 +26,18 @@ const Student_List = ({data} : any) =>  {
           <div className="flex  justify-center mt-20">
             <div className="flex justify-center flex-col  w-[45rem] h-[40rem] rounded-[0.5rem] border-[0.1rem] bg-white  cursor-pointer duration-300 ease-in-out transform hover:border-blue-600 hover:drop-shadow-xl">
               <div>
-                <div className="flex justify-center ">
-                {data.map((item: string[], index: number) => (
-                    <div key={index} className="w-36 h-36 border-2 border-blue-500 rounded-lg flex justify-center items-center bg-gray-100 hover:bg-blue-500 hover:text-white transform hover:scale-105 transition-all duration-300">
-                    <Link href={`/teacher/student/${func}?${url_data}&student_name=${item[0]}`}>
-                        <div className="text-center font-semibold">{item[0]}&apos;s diary</div>
-                    </Link>
-                    </div>
-                ))}
+                
+                <div className="flex flex-col justify-center ">
+                  <div className="text-center mb-6"> Select Student: </div>
+                  <div className="flex justify-center ">
+                  {data.map((item: string[], index: number) => (
+                      <div key={index} className="w-36 h-36 border-2 border-blue-500 rounded-lg flex justify-center items-center bg-gray-100 hover:bg-blue-500 hover:text-white transform hover:scale-105 transition-all duration-300">
+                      <Link href={`/teacher/student/${func}?${url_data}&student_name=${item[0]}`}>
+                          <div className="text-center font-semibold">{item[0]}&apos;s {func}</div>
+                      </Link>
+                      </div>
+                  ))}
+                  </div>
                 </div>
               </div>
             </div>

@@ -19,6 +19,7 @@ const DiaryNavigation = ({studentList}:any) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const searchParams = useSearchParams();
   const today_date = searchParams.get("today_date");
+  const type = searchParams.get("type")
 
   const openIsModal = () => setIsModalOpen(true);
   const closeIsModal = () => setIsModalOpen(false);
@@ -40,7 +41,7 @@ const DiaryNavigation = ({studentList}:any) => {
     };
   }, []); // 빈 배열을 넣으면 컴포넌트가 처음 렌더링될 때만 실행 -> 이벤트 한번만!
 
-  return (
+  return type == "student" ? (
     <div
       className={`header flex z-10 fixed w-[100vw] ${
         scrollPosition < 500 ? "top-0" : "top-[-100px]" // 스크롤 내리면 위로 숨김
@@ -86,7 +87,26 @@ const DiaryNavigation = ({studentList}:any) => {
         </motion.div>
       )}
     </div>
-  );
+  ) : (
+    <div
+      className={`header flex z-10 fixed w-[100vw] ${
+        scrollPosition < 500 ? "top-0" : "top-[-100px]" // 스크롤 내리면 위로 숨김
+      }`}
+    >
+      <div
+        className={`w-full h-20 flex items-center justify-between transition-all duration-700 ${
+          scrollPosition < 500
+            ? "bg-transparent text-white" // 스크롤 500 이하일 때 투명
+            : "bg-white text-black" // 스크롤 500 이상일 때 배경색과 텍스트 색상
+        }`}
+      >
+        <Link href="/" className={`pl-24 text-xl font-['Playwrite']`}>
+          Fluent
+        </Link>
+        
+      </div>
+    </div>
+  )
 };
 
 export default DiaryNavigation;
