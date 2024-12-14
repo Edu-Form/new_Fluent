@@ -1,17 +1,11 @@
 "use client";
 
-
-import { useState } from "react";
+import { API } from "@/utils/api";
+import { useEffect, useState } from "react";
 import { DayPicker } from "react-day-picker";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { AiOutlineLeft } from "react-icons/ai";
+import { useSearchParams } from "next/navigation";
 
 interface ScheduleModalProps {
   closeAddSchedule: () => void;
@@ -23,14 +17,47 @@ export default function AddRoom({ closeAddSchedule }: ScheduleModalProps) {
   const [roomList, setRoomList] = useState([]);
   const [room, setRoom] = useState("");
   const [duration, setDuration] = useState("1");
-  const [teacherName, setTeacherName] = useState("");
+
   const [studentName, setStudentName] = useState("");
-  const [showScheduleTable, setShowScheduleTable] = useState(false); // 세 번째 세션
+  const [studentList, setStudentList] = useState<string[][]>([]); // 학생 리스트
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // 드롭다운 열림 상태
+
   const [showRoomSelection, setShowRoomSelection] = useState(false); // 방넘김
-
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null); // 방 선택
+  const searchParams = useSearchParams();
+  const user = searchParams.get("user") || "";
+  const type = searchParams.get("type");
+  const [teacherName, setTeacherName] = useState(user);
 
-  // Click on Search Available Rooms button to initiate this function.
+  useEffect(() => {
+    if (user) {
+      setTeacherName(user);
+    }
+    async function fetchStudentList() {
+      try {
+        const URL = `${API}/api/diary/${type}/${user}`;
+        const response = await fetch(URL, { cache: "no-store" });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch student list");
+        }
+
+        const data: string[][] = await response.json();
+        setStudentList(data); // 학생 리스트 업데이트
+      } catch (error) {
+        console.error("Error fetching student list:", error);
+      }
+    }
+
+    if (user && type) {
+      fetchStudentList();
+    }
+  }, [user, type]);
+
+  const handleStudentSelect = (name: string) => {
+    setStudentName(name); // 선택한 이름으로 업데이트
+    setIsDropdownOpen(false); // 드롭다운 닫기
+  };
   // This function sends date and time data to API and receives a list of rooms.
   async function searchRooms() {
     const formattedDate = date
@@ -42,7 +69,7 @@ export default function AddRoom({ closeAddSchedule }: ScheduleModalProps) {
       : "";
 
     const all_rooms = await fetch(
-      `http://13.54.77.128/api/schedules/search_rooms/${formattedDate}/${time}/`
+      `${API}/api/schedules/search_rooms/${formattedDate}/${time}/`
     );
     const json_all_rooms = await all_rooms.json();
 
@@ -63,8 +90,6 @@ export default function AddRoom({ closeAddSchedule }: ScheduleModalProps) {
   }
 
   async function saveClass() {
-    setShowScheduleTable(true);
-
     const formattedDate = date
       ? date.toLocaleDateString("ko-KR", {
           year: "numeric",
@@ -73,7 +98,7 @@ export default function AddRoom({ closeAddSchedule }: ScheduleModalProps) {
         })
       : "";
 
-    const response = await fetch(`http://13.54.77.128/api/schedules/`, {
+    const response = await fetch(`${API}/api/schedules/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -89,24 +114,7 @@ export default function AddRoom({ closeAddSchedule }: ScheduleModalProps) {
     });
 
     if (response.status == 200) {
-      const currentSchedule = await fetch(
-        `http://13.54.77.128/api/schedules/oneday_oneteacher/${formattedDate}/${teacherName}`
-      );
-      const data_currentSchedule = await currentSchedule.json();
-
-      const allDivs = document.querySelectorAll(".scheduleTable");
-      for (const div of allDivs) {
-        div.innerHTML = "";
-      }
-
-      for (const each of data_currentSchedule) {
-        const titleDiv = document.getElementById("title");
-        const selectedDiv = document.getElementById(`${parseInt(each.time)}`);
-        if (titleDiv)
-          titleDiv.innerHTML = `${teacherName}'s Schedule for ${formattedDate}`;
-        if (selectedDiv)
-          selectedDiv.innerHTML = ` ${each.student_name} ${each.time_range}`;
-      }
+      window.location.reload(); // 새로고침
     }
   }
 
@@ -128,7 +136,6 @@ export default function AddRoom({ closeAddSchedule }: ScheduleModalProps) {
                 <div className="dot flex mx-5 mt-10 space-x-2">
                   <div className="w-[30px] h-[12px] bg-[#121B5C] rounded-full"></div>
                   <div className="w-[12px] h-[12px] bg-[#D9D9D9] rounded-full"></div>
-                  <div className="w-[12px] h-[12px] bg-[#D9D9D9] rounded-full"></div>
                 </div>
 
                 <div className="flex flex-col items-center  justify-center m">
@@ -137,7 +144,13 @@ export default function AddRoom({ closeAddSchedule }: ScheduleModalProps) {
                 <div className="flex flex-col items-start text-left px-16 py-5">
                   <p className="text-lg font-semibold">When is your class?</p>
                   <p className="mt-3 text-md">
-                    {date ? `${date.toLocaleDateString("ko-KR", {year: "numeric",month: "2-digit",day: "2-digit",})}` : "Select a date"}
+                    {date
+                      ? `${date.toLocaleDateString("ko-KR", {
+                          year: "numeric",
+                          month: "2-digit",
+                          day: "2-digit",
+                        })}`
+                      : "Select a date"}
                   </p>
                 </div>
 
@@ -200,16 +213,18 @@ export default function AddRoom({ closeAddSchedule }: ScheduleModalProps) {
                 <div className="dot flex mx-5 mt-10 space-x-2">
                   <div className="w-[12px] h-[12px] bg-[#D9D9D9] rounded-full"></div>
                   <div className="w-[30px] h-[12px] bg-[#121B5C] rounded-full"></div>
-                  <div className="w-[12px] h-[12px] bg-[#D9D9D9] rounded-full"></div>
                 </div>
                 <div className="flex flex-col ml-[1rem]">
                   <p className="mt-5 text-3xl font-semibold">
                     {date ? `${date.toLocaleDateString()}` : "Select a date"}
                   </p>
 
-                  <p className="my-5 w-20 h-10 text-xl font-semibold rounded-[20px] text-white bg-[#075AFF] flex items-center justify-center">
-                    {time ? `${time}:00` : "time error"}
-                  </p>
+                  <div className="my-5 w-36 h-10 text-xl font-semibold rounded-[20px] text-white bg-[#c5d9ff] flex items-center justify-between pr-3">
+                    <p className="my-5 w-20 h-10 text-xl font-semibold rounded-[20px] text-white bg-[#075AFF] flex items-center justify-center">
+                      {time ? `${time}:00` : "time error"}
+                    </p>
+                    {duration}시간
+                  </div>
                 </div>
 
                 <div className="flex flex-col justify-start mb-4  w-11/12 mx-auto">
@@ -230,45 +245,68 @@ export default function AddRoom({ closeAddSchedule }: ScheduleModalProps) {
                 </div>
                 {room && (
                   <>
-                    {/* <div>
-                        <div className="text-sm">Room</div>
-                        <h5>{room}</h5>
-                      </div> */}
-                    <div className="space-y-2 mb-3  w-11/12 mx-auto ">
-                      <p className="text-lg font-semibold">Duration</p>
-                      <Select value={duration} onValueChange={setDuration}>
-                        <SelectTrigger id="duration">
-                          <SelectValue placeholder="Select duration" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="1">1 hour</SelectItem>
-                          <SelectItem value="2">2 hours</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
                     <div className="flex">
                       <div>
-                        {" "}
                         <Input
                           id="teacher-name"
                           placeholder="Teacher"
                           value={teacherName}
+                          readOnly
                           onChange={(e) => setTeacherName(e.target.value)}
-                          className=" ml-5 border-none focus:outline-none focus:ring-0"
+                          className=" ml-5 w-40 border-none focus:outline-none focus:ring-0  "
                         />
                         <div className="flex ml-5 w-40 border-[1px] border-[#075AFF]"></div>
                       </div>
-                      <div>
-                        {" "}
+
+                      <div className="relative ml-5 w-40">
+                        {/* Input 필드 */}
                         <Input
                           id="student-name"
                           placeholder="Student"
                           value={studentName}
-                          onChange={(e) => setStudentName(e.target.value)}
-                          className=" ml-5 border-none focus:outline-none focus:ring-0"
+                          onChange={(e) => {
+                            setStudentName(e.target.value);
+                            setIsDropdownOpen(true); // 드롭다운 열기
+                          }}
+                          onFocus={() => setIsDropdownOpen(true)} // 포커스 시 드롭다운 열기
+                          className="border-none focus:outline-none focus:ring-0"
                         />
-                        <div className="flex ml-5 w-40 border-[1px] border-[#075AFF]"></div>
+
+                        {/* 드롭다운 버튼 */}
+                        <div
+                          onClick={() => setIsDropdownOpen(!isDropdownOpen)} // 클릭 시 토글
+                          className="absolute inset-y-0 right-0 flex items-center cursor-pointer px-2"
+                        >
+                          ▼
+                        </div>
+                        {/* 드롭다운 목록 */}
+                        {isDropdownOpen && (
+                          <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded shadow">
+                            {studentList.length > 0 ? (
+                              studentList
+                                .filter(([name]) =>
+                                  name
+                                    .toLowerCase()
+                                    .includes(studentName.toLowerCase())
+                                ) // 입력값과 일치하는 이름 필터링
+                                .map(([name]) => (
+                                  <div
+                                    key={name} // 고유 값 사용
+                                    onClick={() => handleStudentSelect(name)}
+                                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                  >
+                                    {name}
+                                  </div>
+                                ))
+                            ) : (
+                              <div className="px-4 py-2 text-gray-500">
+                                No students found
+                              </div>
+                            )}
+                          </div>
+                        )}
+                        {/* 하단 테두리 */}
+                        <div className="flex w-40 border-[1px] border-[#075AFF]"></div>
                       </div>
                     </div>
                   </>
@@ -291,28 +329,6 @@ export default function AddRoom({ closeAddSchedule }: ScheduleModalProps) {
             )}
           </div>
         </div>
-
-        {/* 세 번째 섹션: 시간표 표시 */}
-        {showScheduleTable && (
-          <div className="bg-white border-2 border-slate-500 rounded-3xl p-5 w-[350px] flex flex-col">
-            <div id="title" className="text-xl font-bold"></div>
-            {[...Array(12)].map((_, index) => (
-              <div
-                key={index + 12}
-                id={`${index + 12}`}
-                className="border-2 border-black h-[10%] text-center font-bold scheduleTable"
-              ></div>
-            ))}
-            <div className="flex justify-center mt-4">
-              <button
-                onClick={() => window.location.reload()} // 새로고침 기능
-                className="w-4/5 h-14 rounded-xl text-white bg-[#121B5C]"
-              >
-                close
-              </button>
-            </div>
-          </div>
-        )}
       </div>
     </dialog>
   );

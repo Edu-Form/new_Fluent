@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { API } from "@/utils/api";
+import { useEffect, useState } from "react";
 import { DayPicker } from "react-day-picker";
 import { Input } from "@/components/ui/input";
+import { useSearchParams } from "next/navigation";
 
 interface ScheduleModalProps {
   closeVariousSchedule: () => void;
@@ -11,13 +13,44 @@ interface ScheduleModalProps {
 export default function VariousRoom({
   closeVariousSchedule,
 }: ScheduleModalProps) {
+  const searchParams = useSearchParams();
+  const user = searchParams.get("user") || "";
+  const type = searchParams.get("type");
+  const [teacherName, setTeacherName] = useState(user);
+
   const [dates, setDates] = useState<Date[] | undefined>([]);
   const [time, setTime] = useState<number | "">("");
   const [duration, setDuration] = useState<number | "">("");
-  const [teacherName, setTeacherName] = useState("");
+
   const [studentName, setStudentName] = useState("");
+  const [studentList, setStudentList] = useState<string[][]>([]); // 학생 리스트
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // 드롭다운 상태
+
   const [results, setResults] = useState<any>(null); // API 응답 데이터 저장
   const [showSecondSession, setShowSecondSession] = useState(false); // 두 번째 세션 전환 여부
+
+  useEffect(() => {
+    // Fetch student list from API
+    async function fetchStudentList() {
+      try {
+        const URL = `${API}/api/diary/${type}/${user}`;
+        const response = await fetch(URL, { cache: "no-store" });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch student list");
+        }
+
+        const data: string[][] = await response.json();
+        setStudentList(data); // 학생 리스트 업데이트
+      } catch (error) {
+        console.error("Error fetching student list:", error);
+      }
+    }
+
+    if (user && type) {
+      fetchStudentList();
+    }
+  }, [user, type]);
 
   async function fetchAvailableRooms() {
     const formattedDates = dates
@@ -38,7 +71,7 @@ export default function VariousRoom({
       student_name: studentName,
     };
 
-    const response = await fetch(`http://13.54.77.128/api/schedules/auto/`, {
+    const response = await fetch(`${API}/api/schedules/auto/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -56,30 +89,13 @@ export default function VariousRoom({
   }
 
   async function saveClass() {
-    if (!results) return;
-
-    for (let i = 0; i < results.all_dates.length; i++) {
-      const body = {
-        room_name: results.all_rooms[i],
-        date: results.all_dates[i],
-        time: results.time,
-        duration: 1, // 1시간 고정
-        teacher_name: teacherName,
-        student_name: studentName,
-      };
-
-      await fetch(`http://13.54.77.128/api/schedules/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
-    }
-
     window.location.reload(); // 새로 고침
   }
 
+  const handleStudentSelect = (name: string) => {
+    setStudentName(name);
+    setIsDropdownOpen(false); // 드롭다운 닫기
+  };
   return (
     <dialog
       id="schedule_modal"
@@ -141,7 +157,7 @@ export default function VariousRoom({
                           e.target.value ? parseInt(e.target.value, 10) : ""
                         )
                       }
-                      placeholder="Enter time (24-hour format)"
+                      placeholder="Enter time"
                       className="w-full"
                       min={0}
                       max={23}
@@ -169,19 +185,60 @@ export default function VariousRoom({
                     <p className="text-lg font-semibold">Teacher Name</p>
                     <Input
                       value={teacherName}
+                      readOnly
                       onChange={(e) => setTeacherName(e.target.value)}
                       placeholder="Enter teacher name"
                       className="w-full"
                     />
                   </div>
+
                   <div>
                     <p className="text-lg font-semibold">Student Name</p>
-                    <Input
-                      value={studentName}
-                      onChange={(e) => setStudentName(e.target.value)}
-                      placeholder="Enter student name"
-                      className="w-full"
-                    />
+                    <div className="relative">
+                      <Input
+                        value={studentName}
+                        onChange={(e) => {
+                          setStudentName(e.target.value);
+                          setIsDropdownOpen(true); // 입력 시 드롭다운 열기
+                        }}
+                        placeholder="Enter student name"
+                        className="w-full"
+                        onFocus={() => setIsDropdownOpen(true)} // 포커스 시 드롭다운 열기
+                      />
+                      {/* 드롭다운 버튼 */}
+                      <div
+                        onClick={() => setIsDropdownOpen(!isDropdownOpen)} // 클릭 시 토글
+                        className="absolute inset-y-0 right-0 flex items-center cursor-pointer px-2"
+                      >
+                        ▼
+                      </div>
+                      {/* 드롭다운 */}
+                      {isDropdownOpen && (
+                        <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded shadow max-h-40 overflow-y-auto">
+                          {studentList.length > 0 ? (
+                            studentList
+                              .filter(([name]) =>
+                                name
+                                  .toLowerCase()
+                                  .includes(studentName.toLowerCase())
+                              ) // 입력값과 일치하는 이름 필터링
+                              .map(([name]) => (
+                                <div
+                                  key={name}
+                                  onClick={() => handleStudentSelect(name)}
+                                  className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                >
+                                  {name}
+                                </div>
+                              ))
+                          ) : (
+                            <div className="px-4 py-2 text-gray-500">
+                              No students found
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -229,12 +286,11 @@ export default function VariousRoom({
                 </div>
                 <div className="flex justify-center">
                   <button
-                    onClick={() => {
-                      window.location.reload();
-                    }}
+                    onClick={saveClass} // saveClass 호출
+                    disabled={!results} // results가 없으면 버튼 비활성화
                     className="w-4/5 h-14 mt-6 bg-gradient-to-r from-[#6fdbff] to-[#ffb3fe] rounded-xl text-white"
                   >
-                    Save Class
+                    close
                   </button>
                 </div>
               </>
