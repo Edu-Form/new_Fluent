@@ -178,10 +178,10 @@ const AnnouncementPage = () => {
 
         <div className="flex flex-col justify-start gap-4">
           <Link href={`/quizlet?user=${user}&type=${type}&id=${user_id}`}>
-            <span className="flex justify-between bg-white  hover:bg-[#676ac2] rounded-xl p-5 text-[#32335c]">
+            <span className="flex justify-between bg-white  hover:text-white  hover:bg-[#c79868]  rounded-xl p-5 text-[#32335c]">
               Study the Quizlet{" "}
               <Image
-                src={"/images/blueArrow.svg"}
+                src={"/images/arrow.svg"}
                 alt=""
                 width={30}
                 height={30}
@@ -190,10 +190,10 @@ const AnnouncementPage = () => {
             </span>
           </Link>
           <Link href={next_schedule_data_url}>
-            <span className="flex justify-between bg-white hover:bg-[#676ac2] rounded-xl p-5 text-[#32335c]">
+            <span className="flex justify-between bg-white hover:text-white  hover:bg-[#c79868]  rounded-xl p-5 text-[#32335c]">
               Write the Diary
               <Image
-                src={"/images/blueArrow.svg"}
+                src={"/images/arrow.svg"}
                 alt=""
                 width={30}
                 height={30}
