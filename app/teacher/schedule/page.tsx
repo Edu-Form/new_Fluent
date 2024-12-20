@@ -10,7 +10,7 @@ import EnterButton from "@/components/Button/Button";
 import AddRoom from "@/components/addroom";
 import VariousRoom from "@/components/VariousRoom";
 
-const ToastUI = dynamic(() => import("@/components/ToastUI/ToastUI"), {
+const Teacher_toastUI = dynamic(() => import("@/components/ToastUI/teacher_toastui"), {
   ssr: false,
 });
 
@@ -100,7 +100,7 @@ const SchedulePage = () => {
       </div>
       <div className="flex-1 flex justify-center items-center max-w-full max-h-full overflow-auto">
         <div className="bg-white w-[95%] h-[90%] max-w-full m-5 p-5 rounded-lg shadow-lg overflow-hidden">
-          <ToastUI data={classes} />
+          <Teacher_toastUI data={classes} />
         </div>
       </div>
       {/* AddRoom 모달 */}

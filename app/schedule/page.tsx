@@ -79,7 +79,7 @@ const SchedulePage = () => {
       </div>
       <div className="flex-1 flex justify-center items-center max-w-full max-h-full overflow-auto">
         <div className="bg-white w-[95%] h-[90%] max-w-full m-5 p-5 rounded-lg shadow-lg overflow-hidden">
-          {type === "student" ? <StudentToastUI data={classes} /> : <TeacherToastUI data={classes} />}
+          <StudentToastUI data={classes} />
         </div>
       </div>
     </div>
