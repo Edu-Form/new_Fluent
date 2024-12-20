@@ -169,7 +169,7 @@ const AnnouncementPage = () => {
             href={
               next_schedule_data
                 ? `/teacher/student/quizlet?user=${user}&type=${type}&id=${user_id}&student_name=${next_schedule_data?.student_name}`
-                : `/quizlet?/quizlet?user=${user}&type=${type}&id=${user_id}`
+                : `/teacher/home?user=${user}&type=${type}&id=${user_id}`
             }
           >
             <span className="flex justify-between bg-white hover:text-white hover:bg-[#c79868] rounded-xl p-5 text-[#32335c]">
@@ -188,7 +188,7 @@ const AnnouncementPage = () => {
             href={
               next_schedule_data
                 ? `/teacher/student/diary?user=${user}&type=${type}&id=${user_id}&student_name=${next_schedule_data?.student_name}`
-                : `/quizlet?/quizlet?user=${user}&type=${type}&id=${user_id}`
+                : `/teacher/home?user=${user}&type=${type}&id=${user_id}`
             }
           >
             <span className="flex justify-between bg-white hover:text-white hover:bg-[#c79868] rounded-xl p-5 text-[#32335c]">
@@ -207,7 +207,7 @@ const AnnouncementPage = () => {
             href={
               next_schedule_data
                 ? `/teacher/student/quizlet?user=${user}&type=${type}&id=${user_id}&student_name=${next_schedule_data?.student_name}`
-                : `/quizlet?/quizlet?user=${user}&type=${type}&id=${user_id}`
+                : `/teacher/home?user=${user}&type=${type}&id=${user_id}`
             }
           >
             <span className="flex justify-between bg-white hover:text-white  hover:bg-[#c79868] rounded-xl p-5 text-[#32335c]">
