@@ -144,7 +144,7 @@ const AnnouncementPage = () => {
 
       <Link
         className="flex mt-2  text-sm justify-end text-white hover:text-[#676ac2]"
-        href={`/schedule?user=${user}&type=${type}&id=${user_id}`}
+        href={`/${type}/schedule?user=${user}&type=${type}&id=${user_id}`}
       >
         For more details
         <Image
