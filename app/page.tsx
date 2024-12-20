@@ -35,17 +35,19 @@ export default function Page() {
       const response = await fetch(`http://13.54.77.128/api/user/${username}`);
       if (response.ok) {
         const data = await response.json();
-        console.log(data)
-        if (data){
-          console.log(data[0].user_name)
-          if (data[0].type == "student"){
-            const url = `/home?user=${data[0].user_name}&type=${data[0].type}&id=${data[0].user_number}`
-            router.push(url)
-          } else if (data[0].type == "teacher"){
-            const url = `/teacher/home?user=${data[0].user_name}&type=${data[0].type}&id=${data[0].user_number}`
-            router.push(url)
+        console.log(data);
+        if (data) {
+          console.log(data[0].user_name);
+          if (data[0].type == "student") {
+            const url = `/home?user=${data[0].user_name}&type=${data[0].type}&id=${data[0].user_number}`;
+            router.push(url);
+          } else if (data[0].type == "teacher") {
+            const url = `/teacher/home?user=${data[0].user_name}&type=${data[0].type}&id=${data[0].user_number}`;
+            router.push(url);
+          } else if (data[0].type == "admin") {
+            const url = `/admin/home?user=${data[0].user_name}&type=${data[0].type}&id=${data[0].user_number}`;
+            router.push(url);
           }
-
         }
       }
     } catch {
