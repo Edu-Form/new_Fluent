@@ -124,36 +124,36 @@ const AnnouncementPage = () => {
       <div className="border-[2px] bg-white border-[#32335c] rounded-2xl w-[30rem] p-6">
         <div className="flex justify-around">
           <div className="flex">
-            <p className=" flex flex-col text-lg text-[32335c#0FA7FF] ">
+            <div className=" flex flex-col text-lg text-[32335c#0FA7FF] ">
               {next_schedule_data
                 ? next_schedule_data.date
                 : "No upcoming classes"}
               <span className="flex justify-center text-sm  font-normal text-[#C2C2C2]">
                 Next class
               </span>{" "}
-            </p>
+            </div>
           </div>
 
           <div className="flex">
-            <p className="flex flex-col text-lg text-[#32335c] ">
+            <div className="flex flex-col text-lg text-[#32335c] ">
               {next_schedule_data
                 ? convertTo12HourFormat(next_schedule_data.time)
                 : "N/A"}
               <span className="flex justify-center text-sm font-normal text-[#C2C2C2]">
                 Time
               </span>{" "}
-            </p>
+            </div>
           </div>
 
           <div className="flex">
-            <p className="flex flex-col text-lg text-[#32335c] ">
+            <div className="flex flex-col text-lg text-[#32335c] ">
               {next_schedule_data && room_data
                 ? `${next_schedule_data.room_name} - ${room_data.description}`
                 : "N/A"}
               <span className="flex justify-center text-sm  font-normal text-[#C2C2C2]">
                 Where
               </span>{" "}
-            </p>
+            </div>
           </div>
         </div>
       </div>

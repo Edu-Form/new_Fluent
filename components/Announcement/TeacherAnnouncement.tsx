@@ -99,42 +99,45 @@ const AnnouncementPage = () => {
 
   return (
     <div className="flex flex-col z-50 font-bold">
-      <h1 className="text-2xl mt-4 mb-4 text-white">Hi, {user} !</h1>
-      <p className="flex text-lg text-gray-700">
-        <span className="font-semibold mb-4 text-white">
-          Your classes today : &nbsp;
-        </span>{" "}
-        <div className="text-red-600">
-          {" "}
-          {current_schedule_index + 1} / {day_schedule_data.length}
+      <h1 className="text-2xl mt-4 mb-4 text-white">Hi, {user}!</h1>
+      {day_schedule_data.length > 0 ? (
+        <div className="flex text-lg text-gray-700">
+          <span className="font-semibold mb-4 text-white">
+            Your classes today: &nbsp;
+          </span>
+          <div className="text-red-600">
+            {current_schedule_index + 1} / {day_schedule_data.length}
+          </div>
         </div>
-      </p>
+      ) : (
+        <div className="text-lg text-white mb-2">No classes today.</div>
+      )}
 
       <div className="border-[2px] bg-white border-[#32335c] rounded-2xl w-[30rem] p-6">
         <div className="flex flex-col">
           <div className="flex justify-around">
-            <p className="flex flex-col text-lg text-[#32335c] ">
-              {next_schedule_data ? next_schedule_data.student_name : "N/A"}
+            <div className="flex flex-col text-lg text-[#32335c] ">
+              {next_schedule_data ? next_schedule_data.student_name : " "}
               <span className="flex justify-center text-sm font-normal text-[#C2C2C2]">
                 With:
               </span>{" "}
-            </p>
-            <p className="flex flex-col text-lg text-[#32335c] ">
+            </div>
+            <div className="flex flex-col text-lg text-[#32335c] ">
               {next_schedule_data
                 ? convertTo12HourFormat(next_schedule_data.time)
-                : "N/A"}
+                : " "}
               <span className="flex justify-center text-sm  font-normal text-[#C2C2C2]">
                 Time:
               </span>{" "}
-            </p>
-            <p className="flex flex-col text-lg text-[#32335c] ">
+            </div>
+            <div className="flex flex-col text-lg text-[#32335c] ">
               {next_schedule_data && room_data
                 ? `${next_schedule_data.room_name} - ${room_data.description}`
-                : "N/A"}
+                : " "}
               <span className="flex justify-center text-sm  font-normal text-[#C2C2C2]">
                 Where:
               </span>{" "}
-            </p>
+            </div>
           </div>
         </div>
       </div>
@@ -154,13 +157,12 @@ const AnnouncementPage = () => {
       </Link>
 
       <div className="mt-4">
-        <p className="text-lg mb-4 text-white">
-          Here are all class materials for &nbsp; &quot;
+        <div className="text-lg mb-4 text-white">
+          
           {next_schedule_data != null
-            ? next_schedule_data.student_name
-            : "your next class:"}
-          &quot;
-        </p>
+            ? `Here are all class materials for: ${next_schedule_data.student_name}`
+            : "Life is like a box of chocolates."}
+        </div>
 
         <div className="flex flex-col justify-start gap-4">
           <Link

@@ -74,30 +74,6 @@ const SchedulePage = () => {
             <p className="px-5 my-8 text-gray-400 text-sm font-semibold">
               학생
             </p>
-            <div className="flex flex-col gap-10">
-              <div onClick={Quizlet}>
-                <EnterButton content="Enter Quizlet" />
-              </div>
-              <div onClick={Diary}>
-                <EnterButton content="Enter Diary" />
-              </div>
-            </div>
-          </div>
-        )}
-        {type != "student" && ( // student가 false일 때만 렌더링
-          <div>
-            <div className="h-fit" onClick={openAddSchedule}>
-              <p className="px-5 my-8 text-gray-400 text-sm font-semibold">
-                달력관리
-              </p>
-              <EnterButton content="Add Schedule" />
-            </div>
-            <div className="h-fit" onClick={openVariousSchedule}>
-              <p className="px-5 my-8 text-gray-400 text-sm font-semibold">
-                자동 스케줄 추가
-              </p>
-              <EnterButton content="AI SChEDULE" className="auto-schedule" />
-            </div>
           </div>
         )}
       </div>
@@ -106,14 +82,6 @@ const SchedulePage = () => {
           {type === "student" ? <StudentToastUI data={classes} /> : <TeacherToastUI data={classes} />}
         </div>
       </div>
-      {/* AddRoom 모달 */}
-      {type != "student" && isModalOpen && (
-        <AddRoom closeAddSchedule={closeAddSchedule} />
-      )}
-      {/* VariousRoom 모달 */}
-      {type != "student" && isVariousRoomOpen && (
-        <VariousRoom closeVariousSchedule={closeVariousSchedule} />
-      )}
     </div>
   );
 };
