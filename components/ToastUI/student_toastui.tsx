@@ -250,7 +250,7 @@ const ToastUI: React.FC<ToastUIProps> = ({ data }) => {
       />
 
       {/* 삭제할지 물어보는 모달 */}
-      {selectedEvent && (
+      {/* {selectedEvent && (
         <div className="fixed top-0 left-0 right-0 bottom-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <h3 className="text-xl mb-4">정말로 삭제하시겠습니까?</h3>
@@ -274,7 +274,7 @@ const ToastUI: React.FC<ToastUIProps> = ({ data }) => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

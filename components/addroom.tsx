@@ -90,6 +90,7 @@ export default function AddRoom({ closeAddSchedule }: ScheduleModalProps) {
   }
 
   async function saveClass() {
+    alert("수업이 등록되었습니다!"); // Alert 메시지 출력
     const formattedDate = date
       ? date.toLocaleDateString("ko-KR", {
           year: "numeric",

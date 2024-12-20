@@ -17,19 +17,6 @@ export default function Page() {
   const [username, setUsername] = useState("");
   const router = useRouter();
 
-  // 사용자 번호 및 이름. 로그인 시스템 대체.
-  const users = { "01082413315": "Phil", "01011112222": "Test" };
-
-  // 입력한 전화번호를 조회하고 있으면, 이름을 보내줌.
-  // function user_validation(username: string) {
-  //   const userKeys = Object.keys(users) as (keyof typeof users)[]; // Cast the keys to the actual keys of the users object
-  //   if (userKeys.includes(username as keyof typeof users)) {
-  //     // Ensure username is one of the keys
-  //     return `${users[username as keyof typeof users]}`; // Access the value using the key
-  //   }
-  //   return "0";
-  // }
-
   async function Login() {
     try {
       const response = await fetch(`http://13.54.77.128/api/user/${username}`);

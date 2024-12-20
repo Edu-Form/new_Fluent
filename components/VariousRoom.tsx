@@ -53,6 +53,7 @@ export default function VariousRoom({
   }, [user, type]);
 
   async function fetchAvailableRooms() {
+    alert("수업이 등록되었습니다!"); // Alert 메시지 출력
     const formattedDates = dates
       ? dates.map((date) =>
           date.toLocaleDateString("ko-KR", {
@@ -163,7 +164,7 @@ export default function VariousRoom({
                       max={23}
                     />
                   </div>
-                  <div>
+                  {/* <div>
                     <p className="text-lg font-semibold">
                       Class Duration (hours)
                     </p>
@@ -178,9 +179,9 @@ export default function VariousRoom({
                       placeholder="Enter duration"
                       className="w-full"
                       min={1}
-                      max={8}
+                      max={1}
                     />
-                  </div>
+                  </div> */}
                   <div>
                     <p className="text-lg font-semibold">Teacher Name</p>
                     <Input
@@ -245,15 +246,9 @@ export default function VariousRoom({
                 <div className="flex justify-center">
                   <button
                     onClick={fetchAvailableRooms}
-                    disabled={
-                      !dates ||
-                      !time ||
-                      !duration ||
-                      !teacherName ||
-                      !studentName
-                    }
+                    disabled={!dates || !time || !teacherName || !studentName}
                     className={`w-4/5 h-14 mt-6 rounded-xl text-white ${
-                      dates && time && duration && teacherName && studentName
+                      dates && time && teacherName && studentName
                         ? "bg-gradient-to-r from-[#6fdbff] to-[#ffb3fe]"
                         : "bg-gray-400 cursor-not-allowed"
                     }`}
