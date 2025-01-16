@@ -26,6 +26,14 @@ const ToastUI: React.FC<ToastUIProps> = ({ data }) => {
   const [scheduleData, setScheduleData] = useState<any[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<any | null>(null); // 선택된 이벤트
 
+
+  calendarInstanceRef.current?.on("clickDayname", ({ date }) => {
+    const formattedDate = `${date.getFullYear()}. ${
+      date.getMonth() + 1
+    }. ${date.getDate()}`;
+    // onDateClick(formattedDate); // 클릭된 날짜 전달
+  });
+
   //시간췌크
   const [currentDate, setCurrentDate] = useState({
     year: new Date().getFullYear(),
@@ -217,7 +225,7 @@ const ToastUI: React.FC<ToastUIProps> = ({ data }) => {
 
   return (
     <div>
-      <div className="flex items-center mb-5">
+      <div className="flex items-center my-5">
         <button
           onClick={handlePrevClick}
           className="p-1 px-3  border-2 rounded-[100%] hover:bg-slate-500 hover:text-white"
@@ -246,7 +254,7 @@ const ToastUI: React.FC<ToastUIProps> = ({ data }) => {
 
       <div
         ref={calendarContainerRef}
-        style={{ width: "100%", height: "80vh" }}
+        style={{ width: "100%", height: "65vh" }}
       />
 
       {/* 삭제할지 물어보는 모달 */}

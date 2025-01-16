@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
+import { CiLocationOn } from "react-icons/ci";
+import { PiBookBookmarkFill } from "react-icons/pi";
+import { TbCardsFilled } from "react-icons/tb";
+import { FaCheck } from "react-icons/fa6";
 import { Suspense } from "react";
-import EnterBtn from "../EnterBtn/EnterBtn";
-import Button from "../Button/Button";
 
 interface ScheduleData {
   room_name: string;
@@ -13,26 +14,10 @@ interface ScheduleData {
   time_range: string;
 }
 
-interface RoomData {
-  room_name: string;
-  description: string;
-}
-
-function room_description(data: any, next_schedule_data: any) {
-  for (const item of data) {
-    console.log(item);
-    console.log(next_schedule_data.room_name);
-    if (item.room_name == next_schedule_data.room_name) {
-      // String comparison
-      console.log("Room Description", item);
-      return item; // Return room description
-    }
-  }
-}
-
-function convertTo12HourFormat(time24: any) {
-  const suffix = time24 >= 12 ? "PM" : "AM";
-  const hours12 = time24 % 12 || 12; // Convert 0 to 12 for midnight
+function convertTo12HourFormat(time24: string) {
+  const time = parseInt(time24, 10);
+  const suffix = time >= 12 ? "PM" : "AM";
+  const hours12 = time % 12 || 12; // Convert 0 to 12 for midnight
   return `${hours12} ${suffix}`;
 }
 
@@ -50,194 +35,110 @@ const AnnouncementPage = () => {
   const type = searchParams.get("type");
   const user_id = searchParams.get("id");
   const today = today_formatted();
-  const [day_schedule_data, setDay_schedule_data] = useState([]);
-  const [next_schedule_data, setNext_schedule_data] =
-    useState<ScheduleData | null>(null);
-  const [room_data, setRoom_data] = useState<RoomData | null>(null);
-  const [current_schedule_index, setCurrent_schedule_index] = useState(0);
+
+  const [day_schedule_data, setDay_schedule_data] = useState<ScheduleData[]>(
+    []
+  );
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    // 비동기 데이터 로딩 함수
+    // Fetch schedule data
     const fetchData = async () => {
       const URL = `http://13.54.77.128/api/schedules/oneday_oneteacher/${today}/${user}`;
       try {
         const res = await fetch(URL, { cache: "no-store" });
         const data = await res.json();
         console.log(data);
-        const next = setDay_schedule_data(data);
-        setNext_schedule_data(data[current_schedule_index]); // 가져온 데이터를 상태에 설정
-        fetchRoomData(data[current_schedule_index]);
+        setDay_schedule_data(data); // Set all schedule data
       } catch (error) {
-        console.log("Error");
+        console.log("Error fetching schedule data");
       }
     };
+    fetchData();
+  }, [user, today]);
 
-    const fetchRoomData = async (next_schedule_data: any) => {
-      const URL = `http://13.54.77.128/api/room_list/`;
-      try {
-        const res = await fetch(URL);
-        const data = await res.json();
-        console.log(data);
-        setRoom_data(room_description(data, next_schedule_data)); // 가져온 데이터를 상태에 설정
-      } catch (error) {
-        console.log("Error");
-      }
-    };
-    fetchData(); // 데이터 요청 함수 호출
-  }, [user, today, current_schedule_index]); // 컴포넌트가 처음 렌더링될 때만 실행
-
-  function updateScheduleIndex() {
-    let nextIndex;
-    if (current_schedule_index === day_schedule_data.length - 1) {
-      nextIndex = 0; // Reset to 0 if at the end
-    } else {
-      nextIndex = current_schedule_index + 1; // Increment normally
-    }
-    setCurrent_schedule_index(nextIndex); // Update the index
-    setNext_schedule_data(day_schedule_data[nextIndex]); // Set next schedule data based on calculated index
-  }
+  // 필터링된 데이터
+  const filteredData = day_schedule_data.filter((schedule) =>
+    schedule.student_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <div className="flex flex-col z-50 font-bold">
-      <h1 className="text-2xl mt-4 mb-4 text-white">Hi, {user}!</h1>
-      {day_schedule_data.length > 0 ? (
-        <div className="flex text-lg text-gray-700">
-          <span className="font-semibold mb-4 text-white">
-            Your classes today: &nbsp;
-          </span>
-          <div className="text-red-600">
-            {current_schedule_index + 1} / {day_schedule_data.length}
-          </div>
-        </div>
-      ) : (
-        <div className="text-lg text-white mb-2">No classes today.</div>
-      )}
+    <div className="flex flex-col w-full z-50 font-bold">
+      <div className="flex text-2xl text-gray-700 mb-10 gap-8 items-center">
+        <span className="font-semibold text-black">
+          Today {filteredData.length} class{filteredData.length > 1 ? "es" : ""}
+        </span>
 
-      <div className="border-[2px] bg-white border-[#32335c] rounded-2xl w-[30rem] p-6">
-        <div className="flex flex-col">
-          <div className="flex justify-around">
-            <div className="flex flex-col text-lg text-[#32335c] ">
-              {next_schedule_data ? next_schedule_data.student_name : " "}
-              <span className="flex justify-center text-sm font-normal text-[#C2C2C2]">
-                With:
-              </span>{" "}
-            </div>
-            <div className="flex flex-col text-lg text-[#32335c] ">
-              {next_schedule_data
-                ? convertTo12HourFormat(next_schedule_data.time)
-                : " "}
-              <span className="flex justify-center text-sm  font-normal text-[#C2C2C2]">
-                Time:
-              </span>{" "}
-            </div>
-            <div className="flex flex-col text-lg text-[#32335c] ">
-              {next_schedule_data && room_data
-                ? `${next_schedule_data.room_name} - ${room_data.description}`
-                : " "}
-              <span className="flex justify-center text-sm  font-normal text-[#C2C2C2]">
-                Where:
-              </span>{" "}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <Link
-        className="flex mt-2  text-sm justify-end text-white hover:text-[#676ac2]"
-        href={`/${type}/schedule?user=${user}&type=${type}&id=${user_id}`}
-      >
-        For more details
-        <Image
-          src={"/images/arrow.svg"}
-          alt=""
-          width={14}
-          height={14}
-          className="ml-1 text-center items-center"
+        {/* Search Box */}
+        <input
+          type="text"
+          placeholder="Search student"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="rounded-xl bg-gray-100 px-4 py-2 text-xs w-[15rem] focus:outline-none focus:ring-2 focus:ring-gray-400"
         />
-      </Link>
-
-      <div className="mt-4">
-        <div className="text-lg mb-4 text-white">
-          
-          {next_schedule_data != null
-            ? `Here are all class materials for: ${next_schedule_data.student_name}`
-            : "Life is like a box of chocolates."}
-        </div>
-
-        <div className="flex flex-col justify-start gap-4">
-          <Link
-            href={
-              next_schedule_data
-                ? `/teacher/student/quizlet?user=${user}&type=${type}&id=${user_id}&student_name=${next_schedule_data?.student_name}`
-                : `/teacher/home?user=${user}&type=${type}&id=${user_id}`
-            }
-          >
-            <span className="flex justify-between bg-white hover:text-white hover:bg-[#c79868] rounded-xl p-5 text-[#32335c]">
-              Test the Quizlet
-              <Image
-                src={"/images/arrow.svg"}
-                alt=""
-                width={30}
-                height={30}
-                className="ml-1 text-center items-center"
-              />
-            </span>
-          </Link>
-
-          <Link
-            href={
-              next_schedule_data
-                ? `/teacher/student/diary?user=${user}&type=${type}&id=${user_id}&student_name=${next_schedule_data?.student_name}`
-                : `/teacher/home?user=${user}&type=${type}&id=${user_id}`
-            }
-          >
-            <span className="flex justify-between bg-white hover:text-white hover:bg-[#c79868] rounded-xl p-5 text-[#32335c]">
-              Check the Diary
-              <Image
-                src={"/images/arrow.svg"}
-                alt=""
-                width={30}
-                height={30}
-                className="ml-1 text-center items-center"
-              />
-            </span>{" "}
-          </Link>
-
-          <Link
-            href={
-              next_schedule_data
-                ? `/teacher/student/quizlet?user=${user}&type=${type}&id=${user_id}&student_name=${next_schedule_data?.student_name}`
-                : `/teacher/home?user=${user}&type=${type}&id=${user_id}`
-            }
-          >
-            <span className="flex justify-between bg-white hover:text-white  hover:bg-[#c79868] rounded-xl p-5 text-[#32335c]">
-              Create Notecards
-              <Image
-                src={"/images/arrow.svg"}
-                alt=""
-                width={30}
-                height={30}
-                className="ml-1 text-center items-center"
-              />{" "}
-            </span>{" "}
-          </Link>
-
-          <Link
-            className="text-gray-500 underline hover:text-gray-700"
-            href={`https://cedar-cowl-36f.notion.site/Teacher-s-guide-for-FLUENT-9e483e59fc674fc1a9bcfd4134f574e5`}
-          >
-            The General Teacher&apos;s Guide
-          </Link>
-        </div>
       </div>
 
-      <div className="flex justify-end " onClick={updateScheduleIndex}>
-        <button className="flex w-36 h-10 text-center items-center justify-center rounded-xl  bg-white hover:bg-[#c79868] hover:text-white">
-          {" "}
-          Next Schedule{" "}
-        </button>
+      <div className="grid grid-cols-4 gap-4">
+        {filteredData.length > 0 ? (
+          filteredData.map((schedule, index) => (
+            <div
+              key={index}
+              className="relative bg-[#CBE5FF] rounded-xl p-4"
+            >
+              <div className="absolute left-0 top-0 h-full w-2 bg-[#2675F8] rounded-l-xl"></div>
+              <div className="flex flex-col w-full max-w-[600px] mx-auto">
+                <div className="flex justify-between items-center">
+                  {/* 동그라미와 체크 아이콘 */}
+                  <div className="flex items-center gap-2">
+                    <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                      <FaCheck className="text-[#2675F8] text-lg" />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-sm text-bold font-extrabold text-[#32335c]">
+                        {schedule.student_name || "Unknown"}
+                      </span>
+                      <div className="flex items-center text-xs text-[#C2C2C2] gap-1 mt-1">
+                        <CiLocationOn className="text-[#797979] text-lg font-bold" />
+                        {schedule.room_name || "Unknown"}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 시간 표시 */}
+                  <div className="flex items-center justify-center text-xs text-[#2675F8] bg-white border-2 rounded-full border-blue-500 px-2 py-1">
+                    {convertTo12HourFormat(schedule.time)}
+                  </div>
+                </div>
+              </div>
+
+              <div className=" mt-4 flex gap-2 justify-end">
+                <Link
+                  href={`/teacher/student/quizlet?user=${user}&type=${type}&id=${user_id}&student_name=${schedule.student_name}`}
+                >
+                  <span className="flex items-center justify-center gap-1 border-[#2675F8] border-[1px] bg-white hover:bg-[#2675F8] hover:text-white rounded-lg px-2 py-1 text-[#2675F8] text-xs font-medium shadow-md transition duration-200">
+                    <TbCardsFilled className="text-base" />
+                    Quizlet
+                  </span>
+                </Link>
+
+                <Link
+                  href={`/teacher/student/diary?user=${user}&type=${type}&id=${user_id}&student_name=${schedule.student_name}`}
+                >
+                  <span className="flex items-center justify-center gap-1 border-[#FDB568] border-[1px] bg-white hover:bg-[#FDB568] hover:text-white rounded-lg px-2 py-1 text-[#FDB568] text-xs font-medium shadow-md transition duration-200">
+                    <PiBookBookmarkFill className="text-base" />
+                    Diary
+                  </span>
+                </Link>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="flex justify-center items-center h-[200px] ">
+            <p className="text-lg font-bold text-gray-500">No class today</p>
+          </div>
+        )}
       </div>
-      {/*  */}
     </div>
   );
 };
@@ -249,6 +150,3 @@ export default function Announcement() {
     </Suspense>
   );
 }
-
-//   <div className="h-24 w-full bg-center bg-cover bg-no-repeat" style={{ backgroundImage: "url('/images/flower.png')", backgroundSize: "100px", }}>
-//   </div>

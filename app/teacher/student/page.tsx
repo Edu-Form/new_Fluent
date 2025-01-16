@@ -22,51 +22,25 @@ const Student_List = ({ data }: any) => {
   const router = useRouter();
 
   return (
-    <div className="relative ">
-      <div className="absolute top-0 left-0 w-full h-[30vh] bg-gradient-to-b from-[#3f4166] to-[#292956] z-0"></div>
+    <div className="relative z-10 flex justify-center gap-10 ">
+      <div className="flex  justify-center mt-20">
+        <div>
+          <div className="flex flex-col justify-center ">
+            {/* <div className="text-center mb-6"> Select Student: </div> */}
 
-      <div className="relative z-10 flex justify-center gap-10 ">
-        <div className="flex  justify-center mt-20">
-          <div className="flex justify-center flex-col  w-[80rem] h-[40rem] rounded-[0.5rem] border-[0.1rem] bg-white  cursor-pointer duration-300 ease-in-out transform  hover:drop-shadow-xl">
-            <div>
-              <div className="flex flex-col justify-center ">
-                {/* <div className="text-center mb-6"> Select Student: </div> */}
-
-                <div className="flex justify-center gap-10 ">
-                  {data.map((item: string[], index: number) => (
-                    <div key={index}>
-                      <Link
-                        href={`/teacher/student/${func}?${url_data}&student_name=${item[0]}`}
-                        className="w-60 h-60 border-2 border-[#35375A] rounded-xl flex justify-end items-start text-white bg-[#35375A] hover:bg-[#8A8CAF] hover:border-[#8A8CAF]  transform hover:scale-105 transition-all duration-300"
-                      >
-                        <div className="text-center font-semibold m-2 text-3xl">
-                          {item[0]}
-                        </div>
-                        <div
-                          className="absolute w-10 h-20 bg-white rounded-xl border-2 border-[#35375A]"
-                          style={{ top: "-30px", left: "10px" }}
-                        />
-                        {/* <Image
-                          src={"/images/people.svg"}
-                          alt=""
-                          width={80}
-                          height={80}
-                          className="absolute "
-                          style={{ bottom: "10px", left: "15px" }}
-                        /> */}
-                        <Image
-                          src={"/images/q.svg"}
-                          alt=""
-                          width={100}
-                          height={100}
-                          className="absolute "
-                          style={{ bottom: "10px", right: "-4px" }}
-                        />
-                      </Link>
+            <div className="flex justify-center gap-10 ">
+              {data.map((item: string[], index: number) => (
+                <div key={index}>
+                  <Link
+                    href={`/teacher/student/${func}?${url_data}&student_name=${item[0]}`}
+                    className="w-60 h-60 border-2 border-[#35375A] rounded-xl flex justify-end items-start text-white bg-[#35375A] hover:bg-[#8A8CAF] hover:border-[#8A8CAF]  transform hover:scale-105 transition-all duration-300"
+                  >
+                    <div className="text-center font-semibold m-2 text-3xl">
+                      {item[0]}
                     </div>
-                  ))}
+                  </Link>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>

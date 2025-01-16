@@ -1,4 +1,6 @@
+import Alert from "@/components/Alert";
 import Navigation from "@/components/navigation";
+
 import "./globals.css";
 
 export const metadata = {
@@ -16,9 +18,24 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="{inter.className} w-full min-h-[100vh] bg-white">
-        <Navigation />
-        {children}
+      <body className="w-full  h-screen flex flex-col bg-[#F6F7FB]">
+        {/* 전체 화면 높이를 기준으로 분할 */}
+        <div className="flex flex-col h-full gap-[1vh] p-[2vh]">
+          {/* Alert (10% Height) */}
+          <div className="flex justify-center items-center h-[10%] overflow-hidden">
+            <Alert />
+          </div>
+
+          {/* Main Content (80% Height) */}
+          <div className="flex justify-center items-center h-[80%] overflow-y-auto overflow-x-hidden">
+            {children}
+          </div>
+
+          {/* Navigation (10% Height) */}
+          <div className="flex justify-center items-center h-[10%] overflow-hidden">
+            <Navigation />
+          </div>
+        </div>
       </body>
     </html>
   );

@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import EnterBtn from "@/components/EnterBtn/EnterBtn";
 
 import { useSearchParams } from "next/navigation";
@@ -8,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { Suspense } from "react";
 import Announcement from "@/components/Announcement/TeacherAnnouncement";
 import Navigation from "@/components/navigation";
+import { useEffect, useState } from "react";
 
 const HomePage = () => {
   const searchParams = useSearchParams();
@@ -19,6 +19,7 @@ const HomePage = () => {
   const quizlet_url_data = `user=${user}&type=${type}&id=${user_id}&func=quizlet`;
   const router = useRouter();
 
+  
   function Quizlet() {
     router.push(`/teacher/student?${quizlet_url_data}`);
   }
@@ -32,35 +33,28 @@ const HomePage = () => {
   }
 
   return (
-    <div className="relative ">
-      <div className="absolute top-0 left-0 w-full h-[30vh] bg-gradient-to-b from-[#3f4166] to-[#292956] z-0"></div>
-
-      <div className="relative z-10 flex justify-center gap-10 ">
-        <div className="flex  justify-center mt-20">
-          <div className="flex flex-col relative  w-[45rem] h-[40rem] rounded-[0.5rem] border-[0.1rem] bg-gradient-to-br from-[#e7cfb4] to-[#f0e9d4] cursor-pointer duration-300 ease-in-out transform hover:border-blue-600 hover:drop-shadow-xl">
-            <div>
-              <div className="flex justify-center ">
-                <Announcement />
-              </div>
-            </div>
+    <div className="flex flex-col h-full">
+      {/* 상단 영역 */}
+      <div className="flex flex-1 ">
+        {/* Announcement 컴포넌트 */}
+        <div className="flex flex-col w-[70vw] min-w-[1000px] mx-auto h-[40vh] rounded-3xl bg-white cursor-pointer drop-shadow-lg">
+          <div className="flex p-5 px-8 w-full h-full overflow-auto">
+            <Announcement />
           </div>
         </div>
+      </div>
 
-        <div className="flex flex-col  h-[40rem] justify-between  items-center mt-20">
-          <legend
-            className="relative flex  justify-center w-full h-[20rem] text-xl font-bold font-sans mb-8 bg-white rounded-[0.5rem] border-[0.1rem] "
-            onClick={Schedule}
-          >
-            TO DO LIST
-          </legend>
-
-          <div className="flex gap-5">
-            <div onClick={Quizlet}>
-              <EnterBtn id="quizlet" image="/images/quizlet.svg" />
-            </div>
-            <div onClick={Diary}>
-              <EnterBtn id="diary" image="/images/diary.svg" />
-            </div>
+      {/* 하단 영역 */}
+      <div className="flex flex-1 justify-center items-center">
+        <div className="flex w-[70vw] min-w-[1000px] justify-between">
+          <div onClick={Schedule}>
+            <EnterBtn id="schedule" image="/images/ScheduleCard.svg" />
+          </div>
+          <div onClick={Quizlet}>
+            <EnterBtn id="quizlet" image="/images/QuizletCard.svg" />
+          </div>
+          <div onClick={Diary}>
+            <EnterBtn id="diary" image="/images/DiaryCard.svg" />
           </div>
         </div>
       </div>
