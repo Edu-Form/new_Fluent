@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -22,9 +22,7 @@ export default function Page() {
       const response = await fetch(`http://13.54.77.128/api/user/${username}`);
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
         if (data) {
-          console.log(data[0].user_name);
           if (data[0].type == "student") {
             const url = `/home?user=${data[0].user_name}&type=${data[0].type}&id=${data[0].user_number}`;
             router.push(url);
@@ -42,38 +40,36 @@ export default function Page() {
     }
   }
 
-  // 로그인
-  // async function Login() {
-  //   const current_user = user_validation(username);
-  //   console.log(username, current_user);
-  //   if (current_user == "0") {
-  //     router.push("/");
-  //   } else {
-  //     router.push(`/schedule?user=${current_user}&student=false`);
-  //   }
-  // }
-
   return (
-    <div className="h-[90vh] w-full bg-white flex flex-col items-center justify-center">
-      <Card className="w-[15vw]">
+    <div className="h-screen w-screen bg-white flex items-center justify-center">
+      <Card className="w-[90%] max-w-[400px]">
+        <Image
+          src={"/images/Login.svg"}
+          alt="image"
+          width={0} // 너비와 높이를 비율로 관리
+          height={0}
+          className="w-full h-auto rounded-t-xl"
+        />
         <CardHeader>
-          <CardTitle>Login</CardTitle>
-          <CardDescription>Enter Student ID</CardDescription>
+          <CardTitle className="text-center text-2xl font-bold mt-6 mb-3">
+            Login
+          </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid items-center gap-4">
-            <div className="flex flex-col space-y-1.5">
-              <Input
+          
+            <div className="flex justify-center mb-10">
+              <input
                 id="username"
-                placeholder="Enter your username"
+                placeholder="전화번호를 적으세요"
                 value={username}
                 onChange={(e: any) => setUsername(e.target.value)}
+                className="w-[80%] text-sm placeholder-gray-400 placeholder-opacity-70 border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
               />
             </div>
-          </div>
-        </CardContent>
-        <CardFooter className="flex justify-between ">
-          <Button className="w-full" onClick={Login}>
+        <CardFooter className="flex justify-center">
+          <Button
+            className="w-[90%] rounded-[0.5rem] text-xl py-2 my-20 bg-[#171861]"
+            onClick={Login}
+          >
             Log in
           </Button>
         </CardFooter>

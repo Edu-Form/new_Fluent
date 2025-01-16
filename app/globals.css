@@ -4,6 +4,9 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
+
 @font-face {
   font-family: "Playwrite";
   font-style: normal;
@@ -12,6 +15,8 @@
   src: url(https://fonts.gstatic.com/s/playwriteis/v3/JTUQjI4o_SGg9lecLGptrD1hyyTh89Y.woff2)
     format("woff2");
 }
+
+
 
 @layer base {
   :root {
