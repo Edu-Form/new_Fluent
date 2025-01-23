@@ -33,7 +33,7 @@ const HomePage = () => {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col gap-2 h-full">
       {/* 상단 영역 */}
       <div className="flex flex-1 ">
         {/* Announcement 컴포넌트 */}

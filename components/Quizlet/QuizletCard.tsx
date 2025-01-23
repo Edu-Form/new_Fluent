@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { IoIosArrowBack } from "react-icons/io";
+import { IoIosArrowForward } from "react-icons/io";
 
 export default function QuizletCard({
   content,
@@ -18,14 +20,14 @@ export default function QuizletCard({
   return (
     <div className="flex flex-col justify-center items-center ">
       {content.date ? (
-        <div className="text-2xl font-bold mb-3 text-white">{date}</div>
+        <div className="text-2xl font-bold mb-10 text-[#2675f8]">{date}</div>
       ) : (
-        <div className="text-2xl font-bold mb-10 text-white">
+        <div className="text-2xl font-bold mb-10 text-[#2675f8]">
           Please Select a Quizlet
         </div>
       )}
       <div
-        className="flex flex-col justify-center items-center w-[70vw] h-[60vh] rounded overflow-hidden shadow-xl border-2 bg-white"
+        className="flex flex-col justify-center items-center w-[40vw] h-[40vh] rounded overflow-hidden shadow-base border-2 bg-white"
         onClick={() => setCardface((prev) => 1 - prev)} // 카드 면 변경
       >
         <div className="flex items-center px-6 py-4">
@@ -39,29 +41,26 @@ export default function QuizletCard({
         </div>
       </div>
       <div className="flex mt-3 gap-10 quizlet-card-button">
-        <div
-          className="inline text-4xl hover:animate-pulse text-white rounded-[100%] hover:bg-slate-400"
+        <IoIosArrowBack
+          className="inline text-4xl hover:animate-pulse text-[#2675f8] rounded-[100%] hover:bg-slate-200"
           onClick={() => {
             setCard((prev) => (prev === 0 ? cards.length - 1 : prev - 1));
             setCardface(0); // 영어로 초기화
           }}
-        >
-          {"<"}
-        </div>
+        />
+       {/* 숫자 */}
         {cards.length > 0 && (
-          <div className="flex text-white align-middle">
+          <div className="flex text-[#2675f8] align-middle text-xl">
             {card + 1} / {cards.length}
           </div>
         )}
-        <div
-          className="inline text-4xl hover:animate-pulse text-white rounded-[100%] hover:bg-slate-400"
+        <IoIosArrowForward
+          className="inline text-4xl hover:animate-pulse text-[#2675f8] rounded-[100%] hover:bg-slate-200"
           onClick={() => {
             setCard((prev) => (prev + 1 === cards.length ? 0 : prev + 1));
             setCardface(0); // 영어로 초기화
           }}
-        >
-          {">"}
-        </div>
+        />
       </div>
     </div>
   );

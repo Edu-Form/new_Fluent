@@ -68,8 +68,8 @@ const DiaryPage = () => {
 
   return (
     <>
-      <div className="h-[100vh] w-[100vw] overflow-hidden relative flex justify-center items-center">
-        <Image
+      {/* <div className="h-[100vh] w-[100vw] overflow-hidden relative flex justify-center items-center"> */}
+      {/* <Image
           src={DiaryBg}
           alt="diarymain"
           layout="fill" // 부모 요소를 꽉 채우기 위해 layout="fill" 사용
@@ -81,10 +81,10 @@ const DiaryPage = () => {
             {student_name}&apos;s Diary.
           </span>
           <span className="animate-blink text-white text-4xl">|</span>
-        </div>
+        </div> */}
 
-        {/* 아래 가운데 배치된 SCROLL DOWN 텍스트 */}
-        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-0">
+      {/* 아래 가운데 배치된 SCROLL DOWN 텍스트 */}
+      {/* <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-0">
           <motion.span
             initial="hidden"
             animate="visible"
@@ -93,10 +93,10 @@ const DiaryPage = () => {
           >
             ↓
           </motion.span>
-        </div>
-      </div>
+        </div> */}
+      {/* </div> */}
 
-      <div className="relative mt-40">
+      <div className="relative">
         <div className=" relative px-60 h-[80vh] hide-scrollbar">
           <DiaryCard
             diarydata={diaryData.sort(
@@ -120,7 +120,6 @@ export default function Diary() {
     <Suspense fallback={<div>Loading...</div>}>
       <div className="relative">
         <div className="flex justify-center">
-          <DiaryNavigation />
         </div>
         <DiaryPage />
       </div>
