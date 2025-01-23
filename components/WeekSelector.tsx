@@ -69,7 +69,7 @@ const WeekSelector: React.FC<WeekSelectorProps> = ({
             className="flex flex-col items-center cursor-pointer"
             onClick={() => onDateSelect(day)}
             ref={
-              format(day, "yyyy-MM-dd") === format(selected, "yyyy-MM-dd")
+              format(day, "yyyy-MM-dd") === selected?.toISOString()
                 ? selectedDateRef
                 : null
             }
