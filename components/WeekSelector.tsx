@@ -1,3 +1,5 @@
+"use client"
+
 import React from "react";
 import { format, addDays, subDays } from "date-fns";
 
@@ -26,6 +28,27 @@ const WeekSelector: React.FC<WeekSelectorProps> = ({
     setCurrentDate((prev) => addDays(prev, 7));
   };
 
+  // 오늘 날짜가 중앙에 보이게 하기 위한 ref와 useEffect 설정
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const selectedDateRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (selectedDateRef.current && containerRef.current) {
+      const container = containerRef.current;
+      const selectedDateElement = selectedDateRef.current;
+      const containerWidth = container.offsetWidth;
+      const selectedDateWidth = selectedDateElement.offsetWidth;
+
+      // 중앙으로 스크롤 위치 설정
+      container.scrollTo({
+        left:
+          selectedDateElement.offsetLeft -
+          (containerWidth - selectedDateWidth) / 2,
+        behavior: "smooth",
+      });
+    }
+  }, [selected]);
+
   return (
     <div className="flex items-center justify-between w-full p-4 bg-gray-100 rounded-lg overflow-hidden">
       {/* 이전 주 버튼 */}
@@ -36,12 +59,20 @@ const WeekSelector: React.FC<WeekSelectorProps> = ({
         &lt;
       </button>
       {/* 날짜 목록 */}
-      <div className="flex gap-4 overflow-x-auto">
+      <div
+        ref={containerRef}
+        className="flex gap-4 overflow-x-auto scroll-smooth"
+      >
         {days.map((day) => (
           <div
             key={day.toISOString()}
             className="flex flex-col items-center cursor-pointer"
             onClick={() => onDateSelect(day)}
+            ref={
+              format(day, "yyyy-MM-dd") === format(selected, "yyyy-MM-dd")
+                ? selectedDateRef
+                : null
+            }
           >
             <div
               className={`w-10 h-10 flex items-center justify-center rounded-full ${
