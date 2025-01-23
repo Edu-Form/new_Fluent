@@ -53,7 +53,7 @@ export default function Page() {
         <CardHeader>
           <CardTitle className="text-center text-2xl font-bold mt-6 mb-3">
             Login
-          </CardTitle>
+          </CardTitle> 
         </CardHeader>
           
             <div className="flex justify-center mb-10">

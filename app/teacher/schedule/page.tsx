@@ -82,7 +82,7 @@ const SchedulePage = () => {
         </div>
 
         {/* 학생 리스트 */}
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col h-full gap-3">
           <h3 className="text-lg font-semibold mb-2">학생 리스트</h3>
           {filteredStudents.length > 0 ? (
             <ul className="list-disc list-inside">
